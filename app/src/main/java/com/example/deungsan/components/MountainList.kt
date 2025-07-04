@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import com.google.accompanist.pager.*
 import androidx.compose.material3.Text
 import android.content.Context
-import com.example.deungsan.data.model.Mountain
+import com.example.deungsan.data.model.Review
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,6 +19,9 @@ import androidx.compose.ui.Alignment
 import coil.compose.AsyncImage
 import androidx.compose.ui.res.painterResource
 import android.R
+import androidx.compose.foundation.lazy.items
+import com.example.deungsan.data.model.Mountain
+
 
 @Composable
 fun MountainList(mountains: List<Mountain>) {
@@ -47,8 +50,7 @@ fun MountainItem(
                 .size(80.dp)
                 .padding(end = 12.dp),
             contentScale = ContentScale.Crop,
-//            placeholder = painterResource(id = R.drawable.placeholder),
-//            error = painterResource(id = R.drawable.image_error)
+            error = painterResource(id = R.drawable.stat_notify_error)
         )
 
         Column(

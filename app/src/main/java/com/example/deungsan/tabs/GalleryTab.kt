@@ -7,6 +7,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import android.content.Context
+import com.example.deungsan.components.ReviewGallery
+import com.example.deungsan.data.loader.JsonLoader
 
 @Composable
 fun GalleryTab(context: Context) {
@@ -14,6 +16,7 @@ fun GalleryTab(context: Context) {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text("여기는 갤러리 탭입니다!", fontSize = 20.sp)
+        val reviews = JsonLoader.loadReviewsFromAssets(context)
+        ReviewGallery(reviews)
     }
 }

@@ -1,0 +1,16 @@
+[
+  { "id": 1, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
+  { "id": 2, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
+  { "id": 1, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
+  { "id": 2, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
+  { "id": 1, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
+  { "id": 2, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
+  { "id": 1, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
+  { "id": 2, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
+  { "id": 1, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
+  { "id": 2, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
+  { "id": 1, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
+  { "id": 2, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
+  { "id": 1, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
+  { "id": 2, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"}
+]

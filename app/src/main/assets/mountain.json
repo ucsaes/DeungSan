@@ -1,4 +1,14 @@
 [
   { "id": 1, "name": "북한산", "imagePath": "bukhansan.jpg"},
+  { "id": 2, "name": "설악산", "imagePath": "seoraksan.jpg"},
+  { "id": 1, "name": "북한산", "imagePath": "bukhansan.jpg"},
+  { "id": 2, "name": "설악산", "imagePath": "seoraksan.jpg"},
+  { "id": 1, "name": "북한산", "imagePath": "bukhansan.jpg"},
+  { "id": 2, "name": "설악산", "imagePath": "seoraksan.jpg"},
+  { "id": 1, "name": "북한산", "imagePath": "bukhansan.jpg"},
+  { "id": 2, "name": "설악산", "imagePath": "seoraksan.jpg"},
+  { "id": 1, "name": "북한산", "imagePath": "bukhansan.jpg"},
+  { "id": 2, "name": "설악산", "imagePath": "seoraksan.jpg"},
+  { "id": 1, "name": "북한산", "imagePath": "bukhansan.jpg"},
   { "id": 2, "name": "설악산", "imagePath": "seoraksan.jpg"}
 ]
