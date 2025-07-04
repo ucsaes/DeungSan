@@ -6,9 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import android.content.Context
 
 @Composable
-fun GalleryTab() {
+fun GalleryTab(context: Context) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

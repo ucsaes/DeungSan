@@ -1,5 +1,6 @@
 package com.example.deungsan
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -44,7 +45,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             DeungSanTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    TabWithSwipe()
+                    TabWithSwipe(this)
                 }
             }
         }
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
 // 탭 + 스와이프 화면
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TabWithSwipe() {
+fun TabWithSwipe(context: Context) {
     val items = listOf("명산", "소통창구", "마이페이지")
     val filledIcons = listOf(
         Icons.Filled.Terrain,
@@ -108,9 +109,9 @@ fun TabWithSwipe() {
             modifier = Modifier.padding(innerPadding)
         ) { page ->
             when (page) {
-                0 -> ListTab()
-                1 -> GalleryTab()
-                2 -> MyPageTab()
+                0 -> ListTab(context)
+                1 -> GalleryTab(context)
+                2 -> MyPageTab(context)
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.example.deungsan.data
+package com.example.deungsan.data.model
 
 data class Mountain(
     val id: Int,
