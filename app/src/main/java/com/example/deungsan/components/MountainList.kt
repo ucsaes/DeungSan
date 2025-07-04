@@ -19,21 +19,24 @@ import androidx.compose.ui.Alignment
 import coil.compose.AsyncImage
 import androidx.compose.ui.res.painterResource
 import android.R
+import androidx.compose.foundation.lazy.items
+import com.example.deungsan.data.model.Mountain
+
 
 @Composable
-fun MountainList(reviews: List<Review>) {
+fun MountainList(mountains: List<Mountain>) {
     LazyColumn (
         modifier = Modifier.fillMaxSize()
     ) {
-        items(reviews) { review ->
-            ReviewItem(review)
+        items(mountains) { mountain ->
+            MountainItem(mountain)
         }
     }
 }
 
 @Composable
-fun ReviewItem(
-    review: Review
+fun MountainItem(
+    mountain: Mountain
 ) {
     Row(
         modifier = Modifier
@@ -41,8 +44,8 @@ fun ReviewItem(
             .padding(12.dp)
     ) {
         AsyncImage(
-            model = "file:///android_asset/reviews/${review.imagePath}",
-            contentDescription = review.name,
+            model = "file:///android_asset/mountains/${mountain.imagePath}",
+            contentDescription = mountain.name,
             modifier = Modifier
                 .size(80.dp)
                 .padding(end = 12.dp),
@@ -54,11 +57,11 @@ fun ReviewItem(
             modifier = Modifier.align(Alignment.CenterVertically)
         ) {
             Text(
-                text = review.name,
+                text = mountain.name,
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = "${review.id}m — ${review.name}",
+                text = "${mountain.id}m — ${mountain.name}",
                 style = MaterialTheme.typography.bodyMedium
             )
         }

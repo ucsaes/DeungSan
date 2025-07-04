@@ -2,7 +2,7 @@ package com.example.deungsan.data.model
 
 data class Review(
     val id: Int,
-    val name: String,
-    val discription: String,
+    val author: String,
+    val text: String,
     val imagePath: String
 )
