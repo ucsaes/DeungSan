@@ -1,4 +1,4 @@
 [
-  { "id": 1, "name": "북한산", "description": "mountains/bukhansan.jpg"},
-  { "id": 2, "name": "설악산", "description": "mountains/seoraksan.jpg"}
+  { "id": 1, "name": "북한산", "imagepath": "mountains/bukhansan.jpg"},
+  { "id": 2, "name": "설악산", "imagepath": "mountains/seoraksan.jpg"}
 ]
