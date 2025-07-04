@@ -23,7 +23,8 @@ import com.example.deungsan.tabs.GalleryTab
 import com.example.deungsan.tabs.MyPageTab
 
 import androidx.compose.ui.unit.dp
-
+import java.io.File
+import java.io.FileOutputStream
 
 import androidx.compose.material.icons.filled.Terrain
 import androidx.compose.material.icons.filled.Article
@@ -43,6 +44,7 @@ import com.example.deungsan.ui.theme.GreenPrimaryLight
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        copyJsonIfNotExists(this)
         setContent {
             DeungSanTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
@@ -130,5 +132,28 @@ fun TabWithSwipe(context: Context) {
                 }
             }
         }
+    }
+}
+
+fun copyJsonIfNotExists(context: Context) {
+    val file_1 = File(context.filesDir, "reviews.json")
+    if (!file_1.exists()) {
+        val assetManager = context.assets
+        val inputStream = assetManager.open("reviews.json")
+        val outputStream = FileOutputStream(file_1)
+
+        inputStream.copyTo(outputStream)
+        inputStream.close()
+        outputStream.close()
+    }
+    val file_2 = File(context.filesDir, "mountain.json")
+    if (!file_2.exists()) {
+        val assetManager = context.assets
+        val inputStream = assetManager.open("mountain.json")
+        val outputStream = FileOutputStream(file_2)
+
+        inputStream.copyTo(outputStream)
+        inputStream.close()
+        outputStream.close()
     }
 }

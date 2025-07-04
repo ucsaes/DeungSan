@@ -1,16 +1,16 @@
 [
   { "id": 1, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
   { "id": 2, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
-  { "id": 1, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
-  { "id": 2, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
-  { "id": 1, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
-  { "id": 2, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
-  { "id": 1, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
-  { "id": 2, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
-  { "id": 1, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
-  { "id": 2, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
-  { "id": 1, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
-  { "id": 2, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
-  { "id": 1, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
-  { "id": 2, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"}
+  { "id": 3, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
+  { "id": 4, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
+  { "id": 5, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
+  { "id": 6, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
+  { "id": 7, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
+  { "id": 8, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
+  { "id": 9, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
+  { "id": 10, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
+  { "id": 11, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
+  { "id": 12, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"},
+  { "id": 13, "author": "북한산", "text":"좋아요~", "imagePath": "bukhansan.jpg"},
+  { "id": 14, "name": "설악산", "text":"좋아요~","imagePath": "seoraksan.jpg"}
 ]
