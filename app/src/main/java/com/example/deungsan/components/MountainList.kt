@@ -25,26 +25,33 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.BorderStroke
 
+import androidx.compose.foundation.clickable
+import androidx.navigation.NavController
+
 
 @Composable
-fun MountainList(mountains: List<Mountain>) {
-    LazyColumn (
+fun MountainList(mountains: List<Mountain>, navController: NavController) {
+    LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
         items(mountains) { mountain ->
-            MountainItem(mountain)
+            MountainItem(mountain = mountain) {
+                navController.navigate("detail/${mountain.name}") // mountain.name 또는 ID로 이동
+            }
         }
     }
 }
 
 @Composable
 fun MountainItem(
-    mountain: Mountain
-) {
+    mountain: Mountain,
+    onClick: () -> Unit
+){
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.dp, Color.LightGray),
@@ -72,7 +79,7 @@ fun MountainItem(
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = "${mountain.id}m — ${mountain.name}",
+                    text = "${mountain.height} — ${mountain.name}\n${mountain.location}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )

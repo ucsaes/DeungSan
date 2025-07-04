@@ -14,9 +14,10 @@ import com.example.deungsan.data.loader.JsonLoader
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.deungsan.ui.theme.GreenPrimaryLight
+import androidx.navigation.NavController
 
 @Composable
-fun ListTab(context: Context) {
+fun ListTab(context: Context, navController: NavController) {
     val mountains = JsonLoader.loadMountainsFromAssets(context)
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -33,6 +34,6 @@ fun ListTab(context: Context) {
 
 
         // 리스트 표시 (기존)
-        MountainList(mountains = mountains)
+        MountainList(mountains = mountains, navController = navController)
     }
     }

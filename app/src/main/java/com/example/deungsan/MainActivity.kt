@@ -39,6 +39,11 @@ import com.example.deungsan.ui.theme.GreenPrimary
 import com.example.deungsan.ui.theme.GreenPrimaryDark
 import com.example.deungsan.ui.theme.GreenPrimaryLight
 
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.NavController
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +58,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 // 탭 + 스와이프 화면
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -63,7 +69,6 @@ fun TabWithSwipe(context: Context) {
         Icons.Filled.Article,
         Icons.Filled.Person
     )
-
     val outlinedIcons = listOf(
         Icons.Outlined.Terrain,
         Icons.Outlined.Article,
@@ -72,62 +77,74 @@ fun TabWithSwipe(context: Context) {
 
     val pagerState = rememberPagerState(initialPage = 0)
     val coroutineScope = rememberCoroutineScope()
+    val navController = rememberNavController()  // ← NavController 추가
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color(0xFFF5F5F5)  // 전체 회색 배경
-    )
-    {
-        Scaffold(
-
-            bottomBar = {
-                Surface(
-                    tonalElevation = 4.dp,
-                    shadowElevation = 10.dp
-                ) {
-                    NavigationBar(
-                        modifier = Modifier.height(60.dp), // ← 원하는 높이로 설정
-                        containerColor = Color.White // 하단 바 배경 흰색
-                    ) {
-                        items.forEachIndexed { index, label ->
-                            NavigationBarItem(
-                                selected = pagerState.currentPage == index,
-                                onClick = {
-                                    coroutineScope.launch {
-                                        pagerState.animateScrollToPage(index)
-                                    }
-                                },
-                                icon = {
-                                    val icon =
-                                        if (pagerState.currentPage == index) filledIcons[index] else outlinedIcons[index]
-                                    Icon(icon, contentDescription = label)
-                                },
-                                label = { Text(label) },
-                                colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = GreenPrimaryDark,
-                                    selectedTextColor = GreenPrimaryDark,
-                                    indicatorColor = Color.Transparent
-                                )
-
-                            )
+        color = Color(0xFFF5F5F5)
+    ) {
+        NavHost(
+            navController = navController,
+            startDestination = "mainTabs"
+        ) {
+            composable("mainTabs") {
+                Scaffold(
+                    bottomBar = {
+                        Surface(
+                            tonalElevation = 4.dp,
+                            shadowElevation = 10.dp
+                        ) {
+                            NavigationBar(
+                                modifier = Modifier.height(100.dp),
+                                containerColor = Color.White
+                            ) {
+                                items.forEachIndexed { index, label ->
+                                    NavigationBarItem(
+                                        selected = pagerState.currentPage == index,
+                                        onClick = {
+                                            coroutineScope.launch {
+                                                pagerState.animateScrollToPage(index)
+                                            }
+                                        },
+                                        icon = {
+                                            val icon = if (pagerState.currentPage == index)
+                                                filledIcons[index]
+                                            else
+                                                outlinedIcons[index]
+                                            Icon(icon, contentDescription = label)
+                                        },
+                                        label = { Text(label) },
+                                        colors = NavigationBarItemDefaults.colors(
+                                            selectedIconColor = GreenPrimaryDark,
+                                            selectedTextColor = GreenPrimaryDark,
+                                            indicatorColor = Color.Transparent
+                                        )
+                                    )
+                                }
+                            }
                         }
-
+                    }
+                ) { innerPadding ->
+                    HorizontalPager(
+                        state = pagerState,
+                        count = items.size,
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .background(Color(0xFFFCFCFC))
+                    ) { page ->
+                        when (page) {
+                            0 -> ListTab(context, navController)
+                            1 -> GalleryTab(context)
+                            2 -> MyPageTab(context)
+                        }
                     }
                 }
             }
-        ) { innerPadding ->
-            HorizontalPager(
-                state = pagerState,
-                count = items.size,
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .background(Color(0xFFF5F5F5))
-            ) { page ->
-                when (page) {
-                    0 -> ListTab(context)
-                    1 -> GalleryTab(context)
-                    2 -> MyPageTab(context)
-                }
+
+            // 상세 페이지 등록
+            composable("detail/{name}") { backStackEntry ->
+                val name = backStackEntry.arguments?.getString("name") ?: ""
+                MountainDetailScreen(name)
             }
         }
     }
