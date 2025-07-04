@@ -6,6 +6,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.example.deungsan.data.model.Mountain
+import com.example.deungsan.data.model.Review
 
 
 object JsonLoader {
@@ -13,6 +14,12 @@ object JsonLoader {
         val json = context.assets.open("mountain.json").bufferedReader().use { it.readText() }
         val gson = Gson()
         val type = object : TypeToken<List<Mountain>>() {}.type
+        return gson.fromJson(json, type)
+    }
+    fun loadReviewsFromAssets(context: Context): List<Review> {
+        val json = context.assets.open("reviews.json").bufferedReader().use { it.readText() }
+        val gson = Gson()
+        val type = object : TypeToken<List<Review>>() {}.type
         return gson.fromJson(json, type)
     }
 }
