@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import com.google.accompanist.pager.*
 import androidx.compose.material3.Text
 import android.content.Context
-import com.example.deungsan.data.model.Review
+import com.example.deungsan.data.model.Mountain
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,19 +21,19 @@ import androidx.compose.ui.res.painterResource
 import android.R
 
 @Composable
-fun MountainList(reviews: List<Review>) {
+fun ReviewGallery(mountains: List<Mountain>) {
     LazyColumn (
         modifier = Modifier.fillMaxSize()
     ) {
-        items(reviews) { review ->
-            ReviewItem(review)
+        items(mountains) { mountain ->
+            ReviewItem(mountain)
         }
     }
 }
 
 @Composable
-fun ReviewItem(
-    review: Review
+fun MountainItem(
+    mountain: Mountain
 ) {
     Row(
         modifier = Modifier
@@ -41,8 +41,8 @@ fun ReviewItem(
             .padding(12.dp)
     ) {
         AsyncImage(
-            model = "file:///android_asset/reviews/${review.imagePath}",
-            contentDescription = review.name,
+            model = "file:///android_asset/mountains/${mountain.imagePath}",
+            contentDescription = mountain.name,
             modifier = Modifier
                 .size(80.dp)
                 .padding(end = 12.dp),
@@ -54,11 +54,11 @@ fun ReviewItem(
             modifier = Modifier.align(Alignment.CenterVertically)
         ) {
             Text(
-                text = review.name,
+                text = mountain.name,
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = "${review.id}m — ${review.name}",
+                text = "${mountain.id}m — ${mountain.name}",
                 style = MaterialTheme.typography.bodyMedium
             )
         }
