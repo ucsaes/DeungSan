@@ -47,8 +47,7 @@ fun MountainItem(
                 .size(80.dp)
                 .padding(end = 12.dp),
             contentScale = ContentScale.Crop,
-//            placeholder = painterResource(id = R.drawable.placeholder),
-//            error = painterResource(id = R.drawable.image_error)
+            error = painterResource(id = R.drawable.stat_notify_error)
         )
 
         Column(
