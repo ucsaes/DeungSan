@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -72,46 +73,61 @@ fun TabWithSwipe(context: Context) {
     val pagerState = rememberPagerState(initialPage = 0)
     val coroutineScope = rememberCoroutineScope()
 
-    Scaffold(
-        bottomBar = {
-            NavigationBar (
-                modifier = Modifier.height(60.dp), // ← 원하는 높이로 설정
-                containerColor = Color.White // 하단 바 배경 흰색
-            ){
-                items.forEachIndexed { index, label ->
-                    NavigationBarItem(
-                        selected = pagerState.currentPage == index,
-                        onClick = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(index)
-                            }
-                        },
-                        icon = {
-                            val icon = if (pagerState.currentPage == index) filledIcons[index] else outlinedIcons[index]
-                            Icon(icon, contentDescription = label)
-                        },
-                        label = { Text(label) },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = GreenPrimaryDark,
-                            selectedTextColor = GreenPrimaryDark,
-                            indicatorColor = Color.Transparent
-                        )
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color(0xFFF5F5F5)  // 전체 회색 배경
+    )
+    {
+        Scaffold(
 
-                    )
+            bottomBar = {
+                Surface(
+                    tonalElevation = 4.dp,
+                    shadowElevation = 10.dp
+                ) {
+                    NavigationBar(
+                        modifier = Modifier.height(60.dp), // ← 원하는 높이로 설정
+                        containerColor = Color.White // 하단 바 배경 흰색
+                    ) {
+                        items.forEachIndexed { index, label ->
+                            NavigationBarItem(
+                                selected = pagerState.currentPage == index,
+                                onClick = {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(index)
+                                    }
+                                },
+                                icon = {
+                                    val icon =
+                                        if (pagerState.currentPage == index) filledIcons[index] else outlinedIcons[index]
+                                    Icon(icon, contentDescription = label)
+                                },
+                                label = { Text(label) },
+                                colors = NavigationBarItemDefaults.colors(
+                                    selectedIconColor = GreenPrimaryDark,
+                                    selectedTextColor = GreenPrimaryDark,
+                                    indicatorColor = Color.Transparent
+                                )
 
+                            )
+                        }
+
+                    }
                 }
             }
-        }
-    ) { innerPadding ->
-        HorizontalPager(
-            state = pagerState,
-            count = items.size,
-            modifier = Modifier.padding(innerPadding)
-        ) { page ->
-            when (page) {
-                0 -> ListTab(context)
-                1 -> GalleryTab(context)
-                2 -> MyPageTab(context)
+        ) { innerPadding ->
+            HorizontalPager(
+                state = pagerState,
+                count = items.size,
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .background(Color(0xFFF5F5F5))
+            ) { page ->
+                when (page) {
+                    0 -> ListTab(context)
+                    1 -> GalleryTab(context)
+                    2 -> MyPageTab(context)
+                }
             }
         }
     }

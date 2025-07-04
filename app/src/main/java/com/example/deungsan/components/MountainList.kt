@@ -20,6 +20,12 @@ import coil.compose.AsyncImage
 import androidx.compose.ui.res.painterResource
 import android.R
 
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.BorderStroke
+
+
 @Composable
 fun MountainList(mountains: List<Mountain>) {
     LazyColumn (
@@ -35,33 +41,42 @@ fun MountainList(mountains: List<Mountain>) {
 fun MountainItem(
     mountain: Mountain
 ) {
-    Row(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, Color.LightGray),
+        elevation = CardDefaults.cardElevation(2.dp)
     ) {
-        AsyncImage(
-            model = "file:///android_asset/mountains/${mountain.imagePath}",
-            contentDescription = mountain.name,
+        Row(
             modifier = Modifier
-                .size(80.dp)
-                .padding(end = 12.dp),
-            contentScale = ContentScale.Crop,
-//            placeholder = painterResource(id = R.drawable.placeholder),
-//            error = painterResource(id = R.drawable.image_error)
-        )
-
-        Column(
-            modifier = Modifier.align(Alignment.CenterVertically)
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = mountain.name,
-                style = MaterialTheme.typography.titleMedium
+            AsyncImage(
+                model = "file:///android_asset/mountains/${mountain.imagePath}",
+                contentDescription = mountain.name,
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop
             )
-            Text(
-                text = "${mountain.id}m — ${mountain.name}",
-                style = MaterialTheme.typography.bodyMedium
-            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column {
+                Text(
+                    text = mountain.name,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = "${mountain.id}m — ${mountain.name}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
+            }
         }
     }
 }
