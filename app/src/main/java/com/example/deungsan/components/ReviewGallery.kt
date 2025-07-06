@@ -29,7 +29,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.SpanStyle
 
 inline fun <T> List<T>.partitionIndexed(predicate: (Int, T) -> Boolean): Pair<List<T>, List<T>> {
     val first = mutableListOf<T>()
@@ -70,7 +76,8 @@ fun ReviewItem(review: Review, navController: NavController) {
             .wrapContentHeight()
             .clickable {
                 navController.navigate("reviewDetail/${review.id}")
-            },
+            }
+            .clip(RoundedCornerShape(16.dp)),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.5.dp, Color.LightGray.copy(alpha = 0.3f))
@@ -86,7 +93,28 @@ fun ReviewItem(review: Review, navController: NavController) {
                 contentScale = ContentScale.Fit // 비율 유지
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "- ${review.author}", style = MaterialTheme.typography.bodySmall)
+            Text(
+                text = review.author,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold)
+
+            // 리뷰 미리보기 텍스트
+            Text(
+                text = review.text,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "(더보기)",
+                color = Color.Gray,
+                fontSize = 14.sp
+            )
+
+
+
+
+
         }
     }
 }
