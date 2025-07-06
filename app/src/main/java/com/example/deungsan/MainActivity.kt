@@ -108,8 +108,8 @@ fun TabWithSwipe(context: Context) {
                             shadowElevation = 20.dp
                         ) {
                             NavigationBar(
-                                modifier = Modifier.height(60.dp),
-                                containerColor = Color.White,
+                                modifier = Modifier.height(100.dp),
+                                containerColor = Color.White
                             ) {
                                 items.forEachIndexed { index, label ->
                                     NavigationBarItem(
