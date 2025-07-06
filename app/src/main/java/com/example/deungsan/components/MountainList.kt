@@ -80,7 +80,7 @@ fun MountainItem(
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = "${mountain.height} — ${mountain.name}\n${mountain.location}",
+                    text = "${mountain.height}m — ${mountain.name}\n${mountain.location}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )

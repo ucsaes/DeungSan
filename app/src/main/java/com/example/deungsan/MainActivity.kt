@@ -74,10 +74,13 @@ fun TabWithSwipe(context: Context) {
         Icons.Outlined.Person
     )
 
+<<<<<<< HEAD
     val density = LocalConfiguration.current.densityDpi
 
 
 
+=======
+>>>>>>> ccb36702451762f8545e83862972e1137048a273
     val pagerState = rememberPagerState(initialPage = 0)
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
@@ -97,10 +100,14 @@ fun TabWithSwipe(context: Context) {
                         //하단 탭 그림자, 톤
                         Surface(
                             tonalElevation = 4.dp,
-                            shadowElevation = 10.dp
+                            shadowElevation = 20.dp
                         ) {
                             NavigationBar(
+<<<<<<< HEAD
                                 modifier = Modifier.height(100.dp),
+=======
+                                modifier = Modifier.height(60.dp),
+>>>>>>> ccb36702451762f8545e83862972e1137048a273
                                 containerColor = Color.White
                             ) {
                                 items.forEachIndexed { index, label ->

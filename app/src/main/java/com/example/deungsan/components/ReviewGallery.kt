@@ -23,6 +23,11 @@ import com.example.deungsan.data.model.Review
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 
 inline fun <T> List<T>.partitionIndexed(predicate: (Int, T) -> Boolean): Pair<List<T>, List<T>> {
     val first = mutableListOf<T>()
@@ -59,14 +64,19 @@ fun ReviewItem(review: Review) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight()
+            .padding(horizontal = 2.dp, vertical = 3.dp)
+            .wrapContentHeight(),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.5.dp, Color.LightGray.copy(alpha=0.3f)), //윤곽선
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             AsyncImage(
                 model = "file:///android_asset/reviews/${review.imagePath}",
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
                     .heightIn(min = 100.dp, max = 200.dp), // 높이 다양하게 줘야 masonry 느낌 남
                 contentScale = ContentScale.Crop
             )
