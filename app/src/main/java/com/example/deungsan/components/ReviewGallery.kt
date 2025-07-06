@@ -51,9 +51,9 @@ fun ReviewGallery(reviews: List<Review>,navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .padding(8.dp),
-        contentPadding = PaddingValues(8.dp),
-        verticalItemSpacing = 8.dp,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        contentPadding = PaddingValues(4.dp),
+        verticalItemSpacing = 4.dp,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         items(reviews.size) { index ->
             ReviewItem(reviews[index], navController)
@@ -75,18 +75,17 @@ fun ReviewItem(review: Review, navController: NavController) {
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.5.dp, Color.LightGray.copy(alpha = 0.3f))
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             AsyncImage(
                 model = "file:///android_asset/reviews/${review.imagePath}",
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(12.dp))
-                    .heightIn(min = 100.dp, max = 200.dp),
-                contentScale = ContentScale.Crop
+                    .wrapContentHeight(), // 자동 높이
+                contentScale = ContentScale.Fit // 비율 유지
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = review.text)
             Text(text = "- ${review.author}", style = MaterialTheme.typography.bodySmall)
         }
     }
