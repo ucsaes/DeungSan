@@ -51,11 +51,11 @@ fun MountainItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable { onClick() },
+            .clickable { onClick() }, //클릭가능하게
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, Color.LightGray),
-        elevation = CardDefaults.cardElevation(2.dp)
+        border = BorderStroke(1.dp, Color.LightGray), //윤곽선
+        elevation = CardDefaults.cardElevation(2.dp) //그림자
     ) {
         Row(
             modifier = Modifier

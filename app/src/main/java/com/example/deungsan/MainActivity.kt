@@ -4,20 +4,16 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.sp
 import com.example.deungsan.ui.theme.DeungSanTheme
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import com.example.deungsan.tabs.ListTab
 import com.example.deungsan.tabs.GalleryTab
 import com.example.deungsan.tabs.MyPageTab
@@ -36,14 +32,12 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.ui.graphics.Color
 
 
-import com.example.deungsan.ui.theme.GreenPrimary
 import com.example.deungsan.ui.theme.GreenPrimaryDark
-import com.example.deungsan.ui.theme.GreenPrimaryLight
 
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.NavController
+import com.example.deungsan.data.loader.MountainDetailScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -79,12 +73,13 @@ fun TabWithSwipe(context: Context) {
 
     val pagerState = rememberPagerState(initialPage = 0)
     val coroutineScope = rememberCoroutineScope()
-    val navController = rememberNavController()  // ← NavController 추가
+    val navController = rememberNavController()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xFFF5F5F5)
     ) {
+        //화면 간 전환 정의
         NavHost(
             navController = navController,
             startDestination = "mainTabs"
@@ -92,6 +87,7 @@ fun TabWithSwipe(context: Context) {
             composable("mainTabs") {
                 Scaffold(
                     bottomBar = {
+                        //하단 탭 그림자, 톤
                         Surface(
                             tonalElevation = 4.dp,
                             shadowElevation = 10.dp
@@ -103,6 +99,7 @@ fun TabWithSwipe(context: Context) {
                                 items.forEachIndexed { index, label ->
                                     NavigationBarItem(
                                         selected = pagerState.currentPage == index,
+                                        //탭 클릭시 이동
                                         onClick = {
                                             coroutineScope.launch {
                                                 pagerState.animateScrollToPage(index)
@@ -143,7 +140,7 @@ fun TabWithSwipe(context: Context) {
                 }
             }
 
-            // 상세 페이지 등록
+            // 상세 페이지로 이동
             composable("detail/{name}") { backStackEntry ->
                 val name = backStackEntry.arguments?.getString("name") ?: ""
                 MountainDetailScreen(name)
