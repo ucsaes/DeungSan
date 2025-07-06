@@ -93,9 +93,8 @@ fun MountainDetailScreen(mountainName: String) {
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "${mountain.height}m",
+                    text="${mountain.height}m",
                     style = MaterialTheme.typography.bodyMedium,
-                    text = mountain.height,
                     fontSize = 15.sp
                 )
             }
