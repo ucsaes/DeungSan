@@ -12,11 +12,11 @@ import com.example.deungsan.data.loader.JsonLoader
 
 @Composable
 fun GalleryTab(context: Context) {
+    val reviews = JsonLoader.loadReviewsFromAssets(context)
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        val reviews = JsonLoader.loadReviewsFromAssets(context)
         ReviewGallery(reviews)
     }
 }
