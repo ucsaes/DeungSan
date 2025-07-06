@@ -1,4 +1,4 @@
-package com.example.deungsan.data.loader
+package com.example.deungsan.components
 
 import android.content.Context
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.deungsan.data.loader.JsonLoader
 import com.example.deungsan.data.model.Mountain
 
 @OptIn(ExperimentalMaterial3Api::class)

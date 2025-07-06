@@ -19,8 +19,6 @@ import com.example.deungsan.tabs.GalleryTab
 import com.example.deungsan.tabs.MyPageTab
 
 import androidx.compose.ui.unit.dp
-import java.io.File
-import java.io.FileOutputStream
 
 import androidx.compose.material.icons.filled.Terrain
 import androidx.compose.material.icons.filled.Article
@@ -38,7 +36,7 @@ import com.example.deungsan.data.loader.copyJsonIfNotExists
 
 import androidx.navigation.compose.rememberNavController
 
-import com.example.deungsan.data.loader.MountainDetailScreen
+import com.example.deungsan.components.MountainDetailScreen
 
 
 import com.google.accompanist.navigation.animation.AnimatedNavHost
