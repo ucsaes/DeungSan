@@ -37,10 +37,18 @@ import com.example.deungsan.ui.theme.GreenPrimaryDark
 import com.example.deungsan.data.loader.copyJsonIfNotExists
 
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+
 import com.example.deungsan.data.loader.MountainDetailScreen
-import com.example.deungsan.data.loader.copyJsonIfNotExists
+
+
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
+
 
 
 class MainActivity : ComponentActivity() {
@@ -59,7 +67,7 @@ class MainActivity : ComponentActivity() {
 
 
 // 탭 + 스와이프 화면
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun TabWithSwipe(context: Context) {
     val items = listOf("명산", "소통창구", "마이페이지")
@@ -85,10 +93,14 @@ fun TabWithSwipe(context: Context) {
         color = Color(0xFFF5F5F5)
     ) {
         //화면 간 전환 정의
-        NavHost(
+        AnimatedNavHost(
             navController = navController,
-            startDestination = "mainTabs"
-        ) {
+            startDestination = "mainTabs",
+            enterTransition = { fadeIn(animationSpec = tween(300)) },
+            exitTransition = { fadeOut(animationSpec = tween(300)) },
+            popEnterTransition = { fadeIn(animationSpec = tween(300)) },
+            popExitTransition = { fadeOut(animationSpec = tween(300)) }
+        )  {
             composable("mainTabs") {
                 Scaffold(
                     bottomBar = {
@@ -146,10 +158,26 @@ fun TabWithSwipe(context: Context) {
             }
 
             // 상세 페이지로 이동
-            composable("detail/{name}") { backStackEntry ->
+            composable(
+                route = "detail/{name}",
+                arguments = listOf(navArgument("name") { type = NavType.StringType }),
+                enterTransition = {
+                    slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
+                },
+                exitTransition = {
+                    slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                }
+            ) { backStackEntry ->
                 val name = backStackEntry.arguments?.getString("name") ?: ""
                 MountainDetailScreen(name)
-            }
-        }
+
+
+            } }
     }
 }
