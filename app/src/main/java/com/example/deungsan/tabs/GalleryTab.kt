@@ -7,6 +7,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import android.content.Context
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import com.example.deungsan.components.AddReviewButton
 import com.example.deungsan.components.ReviewGallery
 import com.example.deungsan.data.loader.JsonLoader
 
@@ -18,5 +22,12 @@ fun GalleryTab(context: Context) {
         contentAlignment = Alignment.Center
     ) {
         ReviewGallery(reviews)
+        AddReviewButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+
+            onClick = {}
+        )
     }
 }
