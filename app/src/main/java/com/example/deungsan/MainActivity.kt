@@ -144,7 +144,7 @@ fun TabWithSwipe(context: Context) {
                         count = items.size,
                         modifier = Modifier
                             .padding(innerPadding)
-                            .background(Color(0xFFF7F7F7))
+                            .background(Color(0xFFFFFFFF))
                     ) { page ->
                         when (page) {
                             0 -> ListTab(context, navController)

@@ -36,7 +36,7 @@ import androidx.navigation.NavController
 fun MountainList(mountains: List<Mountain>, navController: NavController) {
     val gradientHeight = 400.dp
     val backgroundBrush = Brush.verticalGradient(
-        colors = listOf(Color.White, Color(0xFFF0F0F0), Color(0xFFE0E0E0)),
+        colors = listOf(Color.White, Color(0xFFF7F7F7), Color(0xFFF7F7F7)),
         startY = 0f,
         endY = with(LocalDensity.current) { gradientHeight.toPx() }
     )
@@ -63,7 +63,7 @@ fun MountainItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable { onClick() }, //클릭가능하게
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(25.dp),
         border = BorderStroke(1.5.dp, Color.LightGray.copy(alpha=0.3f)), //윤곽선

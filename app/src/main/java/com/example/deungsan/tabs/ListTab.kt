@@ -49,6 +49,7 @@ fun ListTab(context: Context, navController: NavController) {
                 fontSize = 20.sp,
                 color = Color.Black,
                 modifier = Modifier
+                    .background(Color.White)
                     .padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
             )
 
