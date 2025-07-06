@@ -30,9 +30,11 @@ import androidx.compose.material.icons.outlined.Terrain
 import androidx.compose.material.icons.outlined.Article
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 
 
 import com.example.deungsan.ui.theme.GreenPrimaryDark
+import com.example.deungsan.data.loader.copyJsonIfNotExists
 
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
@@ -72,6 +74,14 @@ fun TabWithSwipe(context: Context) {
         Icons.Outlined.Person
     )
 
+    val density = LocalConfiguration.current.densityDpi
+
+    val navBarHeight = when {
+        density < 600 -> 60.dp     // 작은 폰
+        density < 800 -> 100.dp     // 보통
+        else -> 100.dp                    // 큰 화면 (태블릿 등)
+    }
+
     val pagerState = rememberPagerState(initialPage = 0)
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
@@ -94,7 +104,7 @@ fun TabWithSwipe(context: Context) {
                             shadowElevation = 10.dp
                         ) {
                             NavigationBar(
-                                modifier = Modifier.height(100.dp),
+                                modifier = Modifier.height(navBarHeight),
                                 containerColor = Color.White
                             ) {
                                 items.forEachIndexed { index, label ->
