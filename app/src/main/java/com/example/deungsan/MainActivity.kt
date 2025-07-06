@@ -176,8 +176,6 @@ fun TabWithSwipe(context: Context) {
             ) { backStackEntry ->
                 val name = backStackEntry.arguments?.getString("name") ?: ""
                 MountainDetailScreen(name)
-
-
             } }
     }
 }

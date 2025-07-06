@@ -64,10 +64,18 @@ fun MountainDetailScreen(mountainName: String) {
                             contentDescription = "뒤로가기"
                         )
                     }
-                }
+                },
+
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFFF7F7F7)
+            )
             )
         }
     ) { innerPadding ->
+        Box( modifier = Modifier
+            .padding(innerPadding)
+            .fillMaxSize()
+            .background(Color(0xFFF7F7F7)))
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -96,14 +104,14 @@ fun MountainDetailScreen(mountainName: String) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Column {
-                Text("🗻 고도:", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text("🗻 고도", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Text("${mountain.height}m", fontSize = 15.sp)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Column {
-                Text("📝 설명:", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text("📝 설명", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Text(mountain.text, fontSize = 15.sp)
             }
         }
