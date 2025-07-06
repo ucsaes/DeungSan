@@ -39,7 +39,7 @@ fun copyJsonIfNotExists(context: Context) {
 
     val CACHED_FILE = "mountain_with_summary.json"
     val cacheFile = File(context.filesDir, CACHED_FILE)
-    if (true && cacheFile.exists()) {
+    if (false && cacheFile.exists()) {
         cacheFile.delete()
     }
 

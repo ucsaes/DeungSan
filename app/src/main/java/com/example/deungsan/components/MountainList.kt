@@ -24,15 +24,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalDensity
 import androidx.navigation.NavController
 
 
 @Composable
 fun MountainList(mountains: List<Mountain>, navController: NavController) {
+    val gradientHeight = 400.dp
+    val backgroundBrush = Brush.verticalGradient(
+        colors = listOf(Color.White, Color(0xFFF0F0F0), Color(0xFFE0E0E0)),
+        startY = 0f,
+        endY = with(LocalDensity.current) { gradientHeight.toPx() }
+    )
+
+
     LazyColumn(
         modifier = Modifier.fillMaxSize()
+            .background(brush = backgroundBrush)
     ) {
         items(mountains) { mountain ->
             MountainItem(mountain = mountain) {
@@ -55,8 +67,6 @@ fun MountainItem(
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(25.dp),
         border = BorderStroke(1.5.dp, Color.LightGray.copy(alpha=0.3f)), //윤곽선
-
-
     ) {
         Row(
             modifier = Modifier
