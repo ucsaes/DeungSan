@@ -76,11 +76,7 @@ fun TabWithSwipe(context: Context) {
 
     val density = LocalConfiguration.current.densityDpi
 
-    val navBarHeight = when {
-        density < 600 -> 60.dp     // 작은 폰
-        density < 800 -> 100.dp     // 보통
-        else -> 100.dp                    // 큰 화면 (태블릿 등)
-    }
+
 
     val pagerState = rememberPagerState(initialPage = 0)
     val coroutineScope = rememberCoroutineScope()
@@ -104,7 +100,7 @@ fun TabWithSwipe(context: Context) {
                             shadowElevation = 10.dp
                         ) {
                             NavigationBar(
-                                modifier = Modifier.height(navBarHeight),
+                                modifier = Modifier.height(100.dp),
                                 containerColor = Color.White
                             ) {
                                 items.forEachIndexed { index, label ->
@@ -140,7 +136,7 @@ fun TabWithSwipe(context: Context) {
                         count = items.size,
                         modifier = Modifier
                             .padding(innerPadding)
-                            .background(Color(0xFFFCFCFC))
+                            .background(Color(0xFFF7F7F7))
                     ) { page ->
                         when (page) {
                             0 -> ListTab(context, navController)
