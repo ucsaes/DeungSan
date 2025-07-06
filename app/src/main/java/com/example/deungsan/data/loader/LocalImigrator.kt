@@ -3,7 +3,6 @@ package com.example.deungsan.data.loader
 import android.content.Context
 import java.io.File
 import java.io.FileOutputStream
-import android.util.Log
 
 fun copyAssetsFolder(context: Context, assetFolderName: String, targetFolderName: String) {
     val assetManager = context.assets
@@ -28,7 +27,7 @@ fun copyAssetsFolder(context: Context, assetFolderName: String, targetFolderName
 
 fun copyJsonIfNotExists(context: Context) {
     val file = File(context.filesDir, "reviews.json")
-    if (true) {
+    if (!file.exists()) {
         val assetManager = context.assets
         val inputStream = assetManager.open("reviews.json")
         val outputStream = FileOutputStream(file)
@@ -37,5 +36,21 @@ fun copyJsonIfNotExists(context: Context) {
         inputStream.close()
         outputStream.close()
     }
-    copyAssetsFolder(context, "reviews", "reviews")
+
+    val CACHED_FILE = "mountain_with_summary.json"
+    val cacheFile = File(context.filesDir, CACHED_FILE)
+    if (false && cacheFile.exists()) {
+        cacheFile.delete()
+    }
+
+    val file_2 = File(context.filesDir, "mountain.json")
+    if (!file_2.exists()) {
+        val assetManager = context.assets
+        val inputStream = assetManager.open("mountain.json")
+        val outputStream = FileOutputStream(file_2)
+
+        inputStream.copyTo(outputStream)
+        inputStream.close()
+        outputStream.close()
+    }
 }

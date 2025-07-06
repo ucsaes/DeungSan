@@ -54,8 +54,7 @@ fun MountainItem(
             .clickable { onClick() }, //클릭가능하게
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, Color.LightGray), //윤곽선
-        elevation = CardDefaults.cardElevation(2.dp) //그림자
+        border = BorderStroke(1.5.dp, Color.LightGray.copy(alpha=0.3f)), //윤곽선
     ) {
         Row(
             modifier = Modifier
@@ -79,7 +78,7 @@ fun MountainItem(
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = "${mountain.height} — ${mountain.name}\n${mountain.location}",
+                    text = "${mountain.height}m — ${mountain.name}\n${mountain.location}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
