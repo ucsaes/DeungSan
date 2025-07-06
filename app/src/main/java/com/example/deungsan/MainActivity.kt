@@ -46,7 +46,7 @@ import androidx.navigation.navArgument
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-
+import com.example.deungsan.components.ReviewDetailScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -98,7 +98,7 @@ fun TabWithSwipe(context: Context) {
             exitTransition = { fadeOut(animationSpec = tween(300)) },
             popEnterTransition = { fadeIn(animationSpec = tween(300)) },
             popExitTransition = { fadeOut(animationSpec = tween(300)) }
-        )  {
+        ) {
             composable("mainTabs") {
                 Scaffold(
                     bottomBar = {
@@ -148,7 +148,7 @@ fun TabWithSwipe(context: Context) {
                     ) { page ->
                         when (page) {
                             0 -> ListTab(context, navController)
-                            1 -> GalleryTab(context)
+                            1 -> GalleryTab(context, navController)
                             2 -> MyPageTab(context)
                         }
                     }
@@ -174,6 +174,29 @@ fun TabWithSwipe(context: Context) {
             ) { backStackEntry ->
                 val name = backStackEntry.arguments?.getString("name") ?: ""
                 MountainDetailScreen(name)
-            } }
+            }
+
+            composable(
+                route = "reviewDetail/{reviewId}",
+                arguments = listOf(navArgument("reviewId") { type = NavType.IntType }),
+                enterTransition = {
+                    slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
+                },
+                exitTransition = {
+                    slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                }
+            ) { backStackEntry ->
+                val reviewId = backStackEntry.arguments?.getInt("reviewId")
+                reviewId?.let {
+                    ReviewDetailScreen(it)
+                }
+            }
+        }
     }
-}
+    }

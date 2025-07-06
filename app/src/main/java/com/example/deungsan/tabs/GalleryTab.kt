@@ -10,18 +10,19 @@ import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.deungsan.components.AddReviewButton
 import com.example.deungsan.components.ReviewGallery
 import com.example.deungsan.data.loader.JsonLoader
 
 @Composable
-fun GalleryTab(context: Context) {
+fun GalleryTab(context: Context, navController: NavController) {
     val reviews = JsonLoader.loadReviewsFromAssets(context)
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        ReviewGallery(reviews)
+        ReviewGallery(reviews, navController)
         AddReviewButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
