@@ -27,13 +27,28 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 
 import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.deungsan.data.loader.MountainViewModel
+import kotlin.text.contains
 
 
 @Composable
-fun MountainList(mountains: List<Mountain>, navController: NavController) {
+fun MountainList(viewModel: MountainViewModel = viewModel(), mountains: List<Mountain>, navController: NavController, onlyFav: Boolean = false) {
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.loadFavorites(context)
+    }
+    val favorites by viewModel.favorites.collectAsState()
+
+
     val gradientHeight = 400.dp
     val backgroundBrush = Brush.verticalGradient(
         colors = listOf(Color.White, Color(0xFFF7F7F7), Color(0xFFF7F7F7)),
@@ -47,8 +62,18 @@ fun MountainList(mountains: List<Mountain>, navController: NavController) {
             .background(brush = backgroundBrush)
     ) {
         items(mountains) { mountain ->
-            MountainItem(mountain = mountain) {
-                navController.navigate("detail/${mountain.name}") // mountain.name 또는 ID로 이동
+            if (!onlyFav || (mountain.name in favorites)) {
+                MountainItem(
+                    mountain = mountain,
+                    isFavorite = (mountain.name in favorites),
+                    onDetailsClick = { navController.navigate("detail/${mountain.name}") },
+                    onFavClick = {
+                        viewModel.toggleFavorite(
+                            context,
+                            mountain.name
+                        )
+                    }
+                )
             }
         }
     }
@@ -57,19 +82,22 @@ fun MountainList(mountains: List<Mountain>, navController: NavController) {
 @Composable
 fun MountainItem(
     mountain: Mountain,
-    onClick: () -> Unit
+    isFavorite: Boolean,
+    onDetailsClick: () -> Unit,
+    onFavClick: () -> Unit
 ){
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable { onClick() },
+            .clickable { onDetailsClick() },
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(25.dp),
         border = BorderStroke(1.5.dp, Color.LightGray.copy(alpha=0.3f)), //윤곽선
     ) {
         Row(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -84,7 +112,7 @@ fun MountainItem(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = mountain.name,
                     style = MaterialTheme.typography.titleMedium
@@ -93,6 +121,18 @@ fun MountainItem(
                     text = "${mountain.height}m — ${mountain.name}\n${mountain.location}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
+                )
+            }
+
+            IconButton(
+                onClick = { onFavClick() },
+                modifier = Modifier
+                    .size(34.dp) // ← 원하는 고정 크기
+            ) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                    contentDescription = "Toggle Favorite",
+                    tint = if (isFavorite) Color(0xFFFF6262) else Color.Gray
                 )
             }
         }

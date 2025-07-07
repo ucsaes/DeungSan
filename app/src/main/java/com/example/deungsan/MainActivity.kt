@@ -132,7 +132,9 @@ fun TabWithSwipe(context: Context) {
                                         label = { Text(label) },
                                         colors = NavigationBarItemDefaults.colors(
                                             selectedIconColor = GreenPrimaryDark,
+                                            unselectedIconColor = Color(0xFFADADAD),
                                             selectedTextColor = GreenPrimaryDark,
+                                            unselectedTextColor = Color(0xFFADADAD),
                                             indicatorColor = Color.Transparent
                                         )
                                     )
@@ -151,7 +153,7 @@ fun TabWithSwipe(context: Context) {
                         when (page) {
                             0 -> ListTab(context, navController)
                             1 -> GalleryTab(context, navController)
-                            2 -> MyPageTab(context)
+                            2 -> MyPageTab(context, navController)
                         }
                     }
                 }
