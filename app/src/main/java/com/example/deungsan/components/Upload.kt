@@ -53,7 +53,8 @@ fun AddReviewButton(
 }
 
 @Composable
-fun AddReviewScreen(onReviewAdded: () -> Unit) {
+fun AddReviewScreen(currentUser: String,
+                    onReviewAdded: () -> Unit) {
     val context = LocalContext.current
     var author by remember { mutableStateOf("") }
     var text by remember { mutableStateOf("") }
@@ -70,14 +71,7 @@ fun AddReviewScreen(onReviewAdded: () -> Unit) {
         Text("등산 기록", fontSize = 24.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = author,
-            onValueChange = { author = it },
-            label = { Text("작성자") },
-            modifier = Modifier.fillMaxWidth()
-        )
 
-        Spacer(Modifier.height(8.dp))
 
         OutlinedTextField(
             value = text,
@@ -144,7 +138,7 @@ fun AddReviewScreen(onReviewAdded: () -> Unit) {
 
                 onReviewAdded()
             },
-            enabled = author.isNotBlank() && text.isNotBlank() && imageUri != null
+            enabled = text.isNotBlank() && imageUri != null
         ) {
             Text("등록")
         }
