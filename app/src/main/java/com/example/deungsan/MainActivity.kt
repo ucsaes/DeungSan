@@ -47,6 +47,7 @@ import androidx.navigation.navArgument
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.runtime.internal.composableLambda
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalDensity
 import com.example.deungsan.components.AddReviewScreen
@@ -278,7 +279,6 @@ class MainActivity : ComponentActivity() {
                 }
 
 
-
                 composable(
                     route = "viewFavorite",
                     enterTransition = {
@@ -296,24 +296,24 @@ class MainActivity : ComponentActivity() {
                 ) {
                     MyFavPage(context, navController)
                 }
-            }
 
-            composable(
-                route = "viewMyReview",
-                enterTransition = {
-                    slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
-                },
-                exitTransition = {
-                    slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
-                },
-                popEnterTransition = {
-                    slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                composable(
+                    route = "viewMyReview",
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popEnterTransition = {
+                        slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                    }
+                ) {
+                    MyReviewPage(context, navController)
                 }
-            ) {
-                MyReviewPage(context,navController)
             }
         }
     }

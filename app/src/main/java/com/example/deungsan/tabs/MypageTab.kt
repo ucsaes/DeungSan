@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import com.example.deungsan.components.MountainList
 import com.example.deungsan.components.ReviewGallery
 import com.example.deungsan.data.loader.JsonLoader
+import com.example.deungsan.LocalCurrentUser
 
 @Composable
 fun MyPageTab(context: Context, navController: NavController) {
@@ -81,6 +82,9 @@ fun MyFavPage(context: Context, navController: NavController) {
 @Composable
 fun MyReviewPage(context: Context, navController: NavController) {
     val reviews = JsonLoader.loadReviewsFromAssets(context)
-//    navController.popBackStack()
-    ReviewGallery(reviews, navController)
+    val currentUser = LocalCurrentUser.current  // 현재 사용자 이름 가져오기
+
+    val myReviews = reviews.filter { it.author == currentUser }  // 내 리뷰만 필터링
+
+    ReviewGallery(myReviews, navController)
 }

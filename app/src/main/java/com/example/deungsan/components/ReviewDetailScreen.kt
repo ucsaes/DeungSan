@@ -1,6 +1,7 @@
 package com.example.deungsan.components
 
 import android.content.Context
+import android.widget.Toast
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -40,6 +42,7 @@ fun ReviewDetailScreen(
     val review = reviews.find { it.id == reviewId }
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     var showMenu by remember { mutableStateOf(false) }
+    var isVisible by remember { mutableStateOf(true) }
 
     if (review == null) {
         Scaffold(
@@ -81,16 +84,16 @@ fun ReviewDetailScreen(
                     }
                 },
                 actions = {
-                    if (review.author == currentUser) {
-                        Box {
-                            IconButton(onClick = { showMenu = true }) {
-                                Icon(Icons.Default.MoreVert, contentDescription = "More")
-                            }
+                    Box {
+                        IconButton(onClick = { showMenu = true }) {
+                            Icon(Icons.Default.MoreVert, contentDescription = "More")
+                        }
 
-                            DropdownMenu(
-                                expanded = showMenu,
-                                onDismissRequest = { showMenu = false }
-                            ) {
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            if (review.author == currentUser) {
                                 DropdownMenuItem(
                                     text = { Text("수정") },
                                     onClick = {
@@ -106,6 +109,30 @@ fun ReviewDetailScreen(
                                         navController.popBackStack()
                                     }
                                 )
+                            } else {
+                                DropdownMenuItem(
+                                    text = { Text("신고") },
+                                    onClick = {
+                                        showMenu = false
+                                        isVisible = false //숨김
+                                        Toast.makeText(context, "리뷰가 신고되었습니다.", Toast.LENGTH_SHORT)
+                                            .show()
+                                        navController.popBackStack()
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("차단") },
+                                    onClick = {
+                                        showMenu = false
+                                        isVisible = false  // 숨김
+                                        Toast.makeText(
+                                            context,
+                                            "${review.author} 님이 차단되었습니다.",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        navController.popBackStack()
+                                    }
+                                )
                             }
                         }
                     }
@@ -117,27 +144,40 @@ fun ReviewDetailScreen(
         },
         containerColor = Color(0xFFF7F7F7)
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(20.dp)
-                .verticalScroll(rememberScrollState())
-                .fillMaxSize()
-                .background(Color(0xFFF7F7F7))
-        ) {
-            AsyncImage(
-                model = "file://${File(context.filesDir, "reviews/${review.imagePath}")}",
-                contentDescription = null,
+        if (isVisible) {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 200.dp),
-                contentScale = ContentScale.Fit
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = review.author, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            Text(text = review.text, style = MaterialTheme.typography.bodyLarge)
+                    .padding(innerPadding)
+                    .padding(20.dp)
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxSize()
+                    .background(Color(0xFFF7F7F7))
+            ) {
+                AsyncImage(
+                    model = "file://${File(context.filesDir, "reviews/${review.imagePath}")}",
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 200.dp),
+                    contentScale = ContentScale.Fit
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = review.author, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(text = review.text, style = MaterialTheme.typography.bodyLarge)
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("이 리뷰는 더 이상 표시되지 않습니다.", color = Color.Black)
+            }
         }
     }
+
 }
 
 fun deleteReview(context: Context, review: Review) {
