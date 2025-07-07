@@ -25,11 +25,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.deungsan.data.loader.JsonLoader
+import com.example.deungsan.data.loader.ReportViewModel
 import com.example.deungsan.data.model.Mountain
 import com.example.deungsan.data.model.Review
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import java.io.File
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,17 +40,20 @@ fun ReviewDetailScreen(
     reviewId: Int,
     navController: NavController,
     currentUser: String,
-    hiddenReviewIds: MutableList<Int> // ← 추가
+    reportViewModel: ReportViewModel = viewModel() // ViewModel 사용
 ) {
     val context = LocalContext.current
     val reviews = remember { JsonLoader.loadReviewsFromAssets(context) }
     val review = reviews.find { it.id == reviewId }
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-    var showMenu by remember { mutableStateOf(false) }
 
-    // 신고 상태를 로컬에서 따로 관리 (5초 후에 반영)
-    var hasReported by remember { mutableStateOf(review?.id in hiddenReviewIds) }
+    var showMenu by remember { mutableStateOf(false) }
+    val reportedIds by reportViewModel.reported.collectAsState() // 신고 목록 관찰
+
+    // 로컬 상태로 신고 여부 조절 (5초 뒤 반영용)
+    var hasReported by remember { mutableStateOf(review?.id.toString() in reportedIds) }
     var triggerReportDelay by remember { mutableStateOf(false) }
+
     LaunchedEffect(triggerReportDelay) {
         if (triggerReportDelay) {
             delay(5000)
@@ -55,8 +61,6 @@ fun ReviewDetailScreen(
             triggerReportDelay = false
         }
     }
-
-
 
     if (review == null) {
         Scaffold(
@@ -76,12 +80,6 @@ fun ReviewDetailScreen(
             }
         }
         return
-    }
-
-    fun hideReview(reviewId: Int) {
-        if (!hiddenReviewIds.contains(reviewId)) {
-            hiddenReviewIds.add(reviewId)
-        }
     }
 
     Scaffold(
@@ -125,18 +123,14 @@ fun ReviewDetailScreen(
                                     onClick = {
                                         showMenu = false
                                         if (hasReported) {
-                                            hiddenReviewIds.remove(review.id)
+                                            reportViewModel.removeReport(context, review.id.toString())
                                             hasReported = false
                                             Toast.makeText(context, "신고가 취소되었습니다.", Toast.LENGTH_SHORT).show()
                                             navController.popBackStack()
                                         } else {
-                                            hideReview(review.id) // 즉시 리스트에는 반영
+                                            reportViewModel.addReport(context, review.id.toString())
                                             Toast.makeText(context, "리뷰가 신고되었습니다.", Toast.LENGTH_SHORT).show()
-
-                                            // LaunchedEffect 작동트리거
                                             triggerReportDelay = true
-
-                                            // 바로 화면 나가기
                                             navController.popBackStack()
                                         }
                                     }
@@ -145,10 +139,9 @@ fun ReviewDetailScreen(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF7F7F7)) // ✅ 이 위치에 있어야 함
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF7F7F7))
             )
-        }
-        ,
+        },
         containerColor = Color(0xFFF7F7F7)
     ) { innerPadding ->
         Column(
@@ -173,7 +166,6 @@ fun ReviewDetailScreen(
         }
     }
 }
-
 
 
 

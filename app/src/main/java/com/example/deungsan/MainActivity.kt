@@ -222,7 +222,7 @@ class MainActivity : ComponentActivity() {
                             reviewId = it,
                             navController = navController,     // 여기에서 navController 전달
                             currentUser = LocalCurrentUser.current,        // 현재 사용자 이름 전달
-                            hiddenReviewIds = hiddenReviewIds
+
                         )
                     }
                 }
@@ -353,7 +353,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     BlockedReviewTab(
                             navController = navController,
-                            hiddenReviewIds = hiddenReviewIds
+
                         )
 
 
