@@ -261,9 +261,9 @@ fun MyPageTab(context: Context, navController: NavController) {
                 modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Outlined.Block, contentDescription = "신고/차단된 리뷰")
+                Icon(Icons.Outlined.Block, contentDescription = "신고된 리뷰")
                 Spacer(Modifier.width(12.dp))
-                Text("신고/차단된 리뷰")
+                Text("신고된 리뷰")
             }
         }
     }
@@ -430,7 +430,7 @@ fun BlockedReviewTab(
             TopAppBar(
                 title = {
                     Text(
-                        text = "신고/차단된 리뷰",
+                        text = "신고된 리뷰",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )

@@ -106,31 +106,37 @@ fun ReviewDetailScreen(
                                     }
                                 )
                             } else {
-                                DropdownMenuItem(
-                                    text = { Text("신고") },
-                                    onClick = {
-                                        showMenu = false
-                                        hideReview(review.id) // 숨기기 수행
-                                        Toast.makeText(context, "리뷰가 신고되었습니다.", Toast.LENGTH_SHORT).show()
-                                        navController.popBackStack()
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text("차단") },
-                                    onClick = {
-                                        showMenu = false
-                                        hideReview(review.id)
-                                        Toast.makeText(context, "${review.author} 님이 차단되었습니다.", Toast.LENGTH_SHORT).show()
-                                        navController.popBackStack()
-                                    }
-                                )
+                                if (review.id in hiddenReviewIds) {
+                                    DropdownMenuItem(
+                                        text = { Text("신고 취소") },
+                                        onClick = {
+                                            showMenu = false
+                                            hiddenReviewIds.remove(review.id)
+                                            Toast.makeText(context, "신고가 취소되었습니다.", Toast.LENGTH_SHORT).show()
+                                            navController.popBackStack()
+                                        }
+                                    )
+
+                                } else {
+                                    DropdownMenuItem(
+                                        text = { Text("신고") },
+                                        onClick = {
+                                            showMenu = false
+                                            hideReview(review.id)
+                                            Toast.makeText(context, "리뷰가 신고되었습니다.", Toast.LENGTH_SHORT).show()
+                                            navController.popBackStack()
+                                        }
+                                    )
+
+                                }
                             }
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF7F7F7))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF7F7F7)) // ✅ 이 위치에 있어야 함
             )
-        },
+        }
+        ,
         containerColor = Color(0xFFF7F7F7)
     ) { innerPadding ->
         Column(
