@@ -124,7 +124,7 @@ fun DeungSanTopBar(
             if (isSearchMode || searchQuery.isNotBlank()) {
                 Box(
                     modifier = Modifier
-                        .width(120.dp)
+                        .width(130.dp)
                         .height(40.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -144,7 +144,15 @@ fun DeungSanTopBar(
                         ),
                         cursorBrush = SolidColor(Color.Black),
                         decorationBox = { innerTextField ->
-                            innerTextField()  // placeholder 없이 바로 텍스트만 보여줌
+                            if (searchQuery.isEmpty()) {
+                                Text(
+                                    "산 이름을 입력하세요",
+                                    color = Color.Gray,
+                                    fontSize = 15.sp,
+                                    modifier = Modifier.fillMaxWidth()  // 여기를 추가
+                                )
+                            }
+                            innerTextField()
                         }
                     )
                 }
