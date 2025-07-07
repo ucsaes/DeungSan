@@ -49,6 +49,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -76,9 +77,11 @@ import com.example.deungsan.ui.theme.GreenPrimaryDark
 import java.nio.file.WatchEvent
 import com.example.deungsan.R
 import com.example.deungsan.components.ReviewItem
+import com.example.deungsan.data.loader.ReportViewModel
 import com.example.deungsan.data.model.Review
 import java.io.FileOutputStream
 import kotlin.math.exp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 @Composable
@@ -398,14 +401,17 @@ fun deleteProfileImage(context: Context, fileName: String = "user_profile.jpg"):
 @Composable
 fun BlockedReviewTab(
     navController: NavController,
-    hiddenReviewIds: List<Int>
+    viewModel: ReportViewModel = viewModel()
 ) {
     val context = LocalContext.current
-    val reviews = remember(hiddenReviewIds) {
-        JsonLoader.loadReviewsFromAssets(context)
+    LaunchedEffect(Unit) {
+        viewModel.loadReports(context)
     }
-    val hiddenReviews = remember(reviews, hiddenReviewIds) {
-        reviews.filter { it.id in hiddenReviewIds }
+    val reportedIds by viewModel.reported.collectAsState()
+
+    val reviews = remember { JsonLoader.loadReviewsFromAssets(context) }
+    val hiddenReviews = remember(reportedIds) {
+        reviews.filter { it.id.toString() in reportedIds }
     }
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
@@ -435,7 +441,9 @@ fun BlockedReviewTab(
             columns = StaggeredGridCells.Fixed(2),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
+                .padding(innerPadding)
+                .background(Color(0xFFF7F7F7))
+                    ,
             contentPadding = PaddingValues(4.dp),
             verticalItemSpacing = 4.dp,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
