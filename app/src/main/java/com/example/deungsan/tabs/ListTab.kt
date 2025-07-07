@@ -144,15 +144,7 @@ fun DeungSanTopBar(
                         ),
                         cursorBrush = SolidColor(Color.Black),
                         decorationBox = { innerTextField ->
-                            if (searchQuery.isEmpty()) {
-                                Text(
-                                    "산을 검색하세요",
-                                    color = Color.Gray,
-                                    fontSize = 15.sp,
-                                    modifier = Modifier.fillMaxWidth()  // 여기를 추가
-                                )
-                            }
-                            innerTextField()
+                            innerTextField()  // placeholder 없이 바로 텍스트만 보여줌
                         }
                     )
                 }
@@ -161,6 +153,12 @@ fun DeungSanTopBar(
                         onClick = onClearClick
                     ) {
                         Icon(Icons.Default.Close, contentDescription = "지우기", tint = Color.Gray)
+                    }
+                } else {
+                    IconButton(
+                        onClick = { }
+                    ) {
+                        Icon(Icons.Default.Close, contentDescription = "지우기", tint = Color.Transparent)
                     }
                 }
             }
