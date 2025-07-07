@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -17,7 +18,7 @@ import com.example.deungsan.data.loader.JsonLoader
 
 @Composable
 fun GalleryTab(context: Context, navController: NavController) {
-    val reviews = JsonLoader.loadReviewsFromAssets(context)
+    val reviews = remember {JsonLoader.loadReviewsFromAssets(context) }
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

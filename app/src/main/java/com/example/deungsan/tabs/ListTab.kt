@@ -17,6 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Brush
 import com.example.deungsan.components.MountainList
 import com.example.deungsan.data.loader.JsonLoader
@@ -31,7 +32,7 @@ import com.example.deungsan.R
 
 @Composable
 fun ListTab(context: Context, navController: NavController) {
-    val mountains = JsonLoader.loadMountainsFromAssets(context)
+    val mountains = remember { JsonLoader.loadMountainsFromAssets(context) }
     val gradientHeight = 400.dp
     val backgroundBrush = Brush.verticalGradient(
         colors = listOf(Color.White, Color(0xFFF7F7F7), Color(0xFFF7F7F7)),

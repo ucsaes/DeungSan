@@ -81,7 +81,7 @@ fun ReviewItem(review: Review, navController: NavController) {
             .clip(RoundedCornerShape(16.dp)),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.5.dp, Color.LightGray.copy(alpha = 0.3f))
+        border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.3f))
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             val context = LocalContext.current

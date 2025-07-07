@@ -294,7 +294,7 @@ fun TabWithSwipe(context: Context) {
                     slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
                 }
             ) {
-                MyFavPage(context,navController)
+                MyFavPage(navController)
             }
 
             composable(
@@ -312,7 +312,7 @@ fun TabWithSwipe(context: Context) {
                     slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
                 }
             ) {
-                MyReviewPage(context,navController)
+                MyReviewPage(navController)
             }
         }
     }

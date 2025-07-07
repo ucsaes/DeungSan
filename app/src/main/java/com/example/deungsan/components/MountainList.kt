@@ -98,7 +98,7 @@ fun MountainItem(
             .clickable { onDetailsClick() },
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(25.dp),
-        border = BorderStroke(1.5.dp, Color.LightGray.copy(alpha=0.3f)), //윤곽선
+        border = BorderStroke(1.dp, Color.LightGray.copy(alpha=0.3f)), //윤곽선
     ) {
         Row(
             modifier = Modifier
@@ -137,7 +137,7 @@ fun MountainItem(
                 Icon(
                     imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                     contentDescription = "Toggle Favorite",
-                    tint = if (isFavorite) Color(0xFFFF6262) else Color.Gray
+                    tint = if (isFavorite) Color(0xFFFF6262) else Color(0xFFB9B9B9)
                 )
             }
         }
