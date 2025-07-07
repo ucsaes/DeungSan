@@ -91,22 +91,24 @@ fun MyPageTab(context: Context, navController: NavController) {
     val profileFile = File(context.filesDir, "user_profile.jpg")
     var reloadKey by remember { mutableStateOf(System.currentTimeMillis()) }
 
-    val imageRequest = if (profileFile.exists()) {
-        ImageRequest.Builder(context)
-            .data(profileFile)
-            .diskCachePolicy(CachePolicy.DISABLED)    // 디스크 캐시 끄기
-            .memoryCachePolicy(CachePolicy.DISABLED)  // 메모리 캐시 끄기
-            .setParameter("reloadKey", reloadKey)
-            .build()
-    } else {
-        ImageRequest.Builder(context)
-            .data(R.drawable.default_profile)
-            .build()
+    val imageRequest = remember(reloadKey) {
+        if (profileFile.exists()) {
+            ImageRequest.Builder(context)
+                .data(profileFile)
+                .diskCachePolicy(CachePolicy.DISABLED)
+                .memoryCachePolicy(CachePolicy.DISABLED)
+                .setParameter("reloadKey", reloadKey) // 강제 캐시 무효화
+                .build()
+        } else {
+            ImageRequest.Builder(context)
+                .data(R.drawable.default_profile)
+                .build()
+        }
     }
     val uploadProfile = rememberUploadProfileLauncher(context) { success ->
         if (success) {
             reloadKey = System.currentTimeMillis()
-            Toast.makeText(context, "프로필 사진 저장 완료, 재실행해주세요", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "프로필 사진 저장 완료", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(context, "프로필 사진 저장 실패", Toast.LENGTH_SHORT).show()
         }
@@ -138,7 +140,7 @@ fun MyPageTab(context: Context, navController: NavController) {
                         modifier = Modifier
                             .size(90.dp)
                             .clip(CircleShape),
-                        contentScale = ContentScale.Crop,
+                        contentScale = ContentScale.Crop
                     )
                     Spacer(Modifier.width(12.dp))
                     Text(
