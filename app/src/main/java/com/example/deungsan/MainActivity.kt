@@ -46,6 +46,7 @@ import androidx.navigation.navArgument
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import com.example.deungsan.components.AddReviewScreen
 import com.example.deungsan.components.ReviewDetailScreen
 
 
@@ -157,7 +158,7 @@ fun TabWithSwipe(context: Context) {
                 }
             }
 
-            // 상세 페이지로 이동
+            // 탭1 상세 페이지로 이동
             composable(
                 route = "detail/{name}",
                 arguments = listOf(navArgument("name") { type = NavType.StringType }),
@@ -178,6 +179,7 @@ fun TabWithSwipe(context: Context) {
                 MountainDetailScreen(name)
             }
 
+            //탭2 상세페이지로 이동
             composable(
                 route = "reviewDetail/{reviewId}",
                 arguments = listOf(navArgument("reviewId") { type = NavType.IntType }),
@@ -198,6 +200,27 @@ fun TabWithSwipe(context: Context) {
                 reviewId?.let {
                     ReviewDetailScreen(it)
                 }
+            }
+
+            //탭2 리뷰 추가
+            composable(
+                route = "addReview",
+                enterTransition = {
+                    slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
+                },
+                exitTransition = {
+                    slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                }
+            ) {
+                AddReviewScreen(onReviewAdded = {
+                    navController.popBackStack() // 등록 후 뒤로가기
+                })
             }
         }
     }

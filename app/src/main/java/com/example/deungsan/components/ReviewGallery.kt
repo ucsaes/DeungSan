@@ -29,6 +29,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -36,6 +37,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.SpanStyle
+import java.io.File
 
 inline fun <T> List<T>.partitionIndexed(predicate: (Int, T) -> Boolean): Pair<List<T>, List<T>> {
     val first = mutableListOf<T>()
@@ -83,8 +85,10 @@ fun ReviewItem(review: Review, navController: NavController) {
         border = BorderStroke(1.5.dp, Color.LightGray.copy(alpha = 0.3f))
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
+            val context = LocalContext.current
+
             AsyncImage(
-                model = "file:///android_asset/reviews/${review.imagePath}",
+                model = "file://${File(context.filesDir, "reviews/${review.imagePath}")}",
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()

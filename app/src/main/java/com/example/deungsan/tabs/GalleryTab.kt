@@ -28,7 +28,8 @@ fun GalleryTab(context: Context, navController: NavController) {
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
 
-            onClick = {}
+            onClick = { navController.navigate("addReview") }
         )
     }
+
 }

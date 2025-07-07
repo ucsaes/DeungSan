@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.deungsan.data.loader.JsonLoader
 import com.example.deungsan.data.model.Mountain
+import java.io.File
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReviewDetailScreen(reviewId: Int) {
@@ -90,8 +92,11 @@ fun ReviewDetailScreen(reviewId: Int) {
                 .fillMaxSize()
                 .background(Color(0xFFF7F7F7))
         ) {
+            val context = LocalContext.current
+
+
             AsyncImage(
-                model = "file:///android_asset/reviews/${review.imagePath}",
+                model = "file://${File(context.filesDir, "reviews/${review.imagePath}")}",
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
