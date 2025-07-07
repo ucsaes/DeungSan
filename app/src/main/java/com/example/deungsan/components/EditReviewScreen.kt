@@ -23,6 +23,7 @@ import java.io.File
 @Composable
 fun EditReviewScreen(
     reviewId: Int,
+    currentUser:String,
     onReviewUpdated: () -> Unit
 ) {
     val context = LocalContext.current
@@ -49,14 +50,6 @@ fun EditReviewScreen(
         Text("등산 기록", fontSize = 24.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = author,
-            onValueChange = { author = it },
-            label = { Text("작성자") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(Modifier.height(8.dp))
 
         OutlinedTextField(
             value = text,
@@ -68,62 +61,26 @@ fun EditReviewScreen(
 
         Spacer(Modifier.height(8.dp))
 
-        Button(
-            onClick = { imagePickerLauncher.launch("image/*") },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFA7D5A9), // 연녹색
-                contentColor = Color.White         // 텍스트 색상 (선택)
-            )
-        ) {
-            Text("이미지 선택")
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // 미리보기
-        if (imageUri != null) {
-            Image(
-                painter = rememberAsyncImagePainter(imageUri),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            Image(
-                painter = rememberAsyncImagePainter(
-                    model = "file://${File(context.filesDir, "reviews/${review.imagePath}")}"
-                ),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
-            )
-        }
+        // 기존 이미지 미리보기
+        Image(
+            painter = rememberAsyncImagePainter(
+                model = "file://${File(context.filesDir, "reviews/${review.imagePath}")}"
+            ),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .clip(RoundedCornerShape(12.dp)),
+            contentScale = ContentScale.Crop
+        )
 
         Spacer(Modifier.height(12.dp))
 
         Button(
             onClick = {
-                val newImagePath = imageUri?.let { uri ->
-                    val newFileName = "${review.id}.jpeg"
-                    val inputStream = context.contentResolver.openInputStream(uri)
-                    val file = File(context.filesDir, "reviews/$newFileName")
-                    file.parentFile?.mkdirs()
-                    val outputStream = file.outputStream()
-                    inputStream?.copyTo(outputStream)
-                    inputStream?.close()
-                    outputStream.close()
-                    newFileName
-                } ?: review.imagePath
-
                 val updatedReviews = reviews.map {
                     if (it.id == review.id) {
-                        it.copy(author = author, text = text, imagePath = newImagePath)
+                        it.copy(author = author, text = text) // imagePath 변경 없음
                     } else {
                         it
                     }
@@ -132,7 +89,11 @@ fun EditReviewScreen(
                 saveReviewsToFile(context, updatedReviews)
                 onReviewUpdated()
             },
-            enabled = author.isNotBlank() && text.isNotBlank()
+            enabled = author.isNotBlank() && text.isNotBlank(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFA7D5A9),
+                contentColor = Color.White
+            )
         ) {
             Text("수정 완료")
         }

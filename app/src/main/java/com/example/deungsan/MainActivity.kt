@@ -224,9 +224,13 @@ fun TabWithSwipe(context: Context) {
                     slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
                 }
             ) {
-                AddReviewScreen(onReviewAdded = {
-                    navController.popBackStack() // 등록 후 뒤로가기
-                })
+                val currentUser = "한다인이"
+                AddReviewScreen(
+                    onReviewAdded = {
+                        navController.popBackStack() // 등록 후 뒤로가기
+                    },
+                    currentUser = currentUser
+                )
             }
 
 
@@ -247,12 +251,14 @@ fun TabWithSwipe(context: Context) {
                 }
             ) { backStackEntry ->
                 val reviewId = backStackEntry.arguments?.getString("reviewId")?.toIntOrNull()
+                val currentUser = "한다인이"
                 if (reviewId != null) {
                     EditReviewScreen(
                         reviewId = reviewId,
                         onReviewUpdated = {
                             navController.popBackStack() // 수정 후 뒤로가기
-                        }
+                        },
+                        currentUser = currentUser
                     )
                 } else {
                     // 예외 처리: ID 파싱 실패
