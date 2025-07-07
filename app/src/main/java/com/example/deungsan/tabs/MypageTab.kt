@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import android.content.Context
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
@@ -46,9 +48,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -61,12 +65,15 @@ import com.example.deungsan.LocalCurrentUser
 import com.example.deungsan.ui.theme.GreenPrimaryDark
 import java.nio.file.WatchEvent
 import com.example.deungsan.R
+import kotlin.math.exp
 
 
 @Composable
 fun MyPageTab(context: Context, navController: NavController) {
     val profileFile = File(context.filesDir, "user_profile")
     val imageSource: Any = if (profileFile.exists()) profileFile else R.drawable.default_profile
+    var expanded by remember { mutableStateOf(false) }
+
 
     Column (
         modifier = Modifier.fillMaxSize(),
@@ -75,26 +82,86 @@ fun MyPageTab(context: Context, navController: NavController) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .clickable(onClick = { expanded = !expanded }),
             colors = CardDefaults.cardColors(containerColor = GreenPrimaryDark),
             shape = RoundedCornerShape(30.dp),
-            border = BorderStroke(1.dp, Color.LightGray.copy(alpha=0.3f))
+            border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.3f))
         ) {
-            Row(
-                modifier = Modifier.padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                AsyncImage(
-                    model = imageSource,
-                    contentDescription = "프로필 이미지",
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(Modifier.width(12.dp))
-                Text(text="김등산", color=Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                Text(text="님, 반갑습니다!", color=Color.White, fontSize = 20.sp)
+                Row(
+                    modifier = Modifier.padding(25.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    AsyncImage(
+                        model = imageSource,
+                        contentDescription = "프로필 이미지",
+                        modifier = Modifier
+                            .size(90.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop,
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        text = "김등산",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                    Text(text = "님, 반갑습니다!", color = Color.White, fontSize = 20.sp)
+                }
+                if (expanded) {
+                    Divider(
+                        color = Color.White,
+                        thickness = 1.dp,
+                        modifier = Modifier
+                            .width(230.dp)
+                            .padding(vertical = 2.dp)
+                    )
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { /* 클릭 처리 */ },
+                        shape = RoundedCornerShape(8.dp),
+                        color = Color.Transparent,
+
+                    ) {
+                        Text(
+                            "프로필 사진 설정하기",
+                            modifier = Modifier.padding(16.dp),
+                            textAlign = TextAlign.Center,
+                            color = Color.White,
+                            fontSize = 15.sp
+                        )
+                    }
+                    if (profileFile.exists()) {
+                        Divider(
+                            color = Color.White,
+                            thickness = 1.dp,
+                            modifier = Modifier
+                                .width(230.dp)
+                                .padding(vertical = 2.dp)
+                        )
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { /* 클릭 처리 */ },
+                            shape = RoundedCornerShape(8.dp),
+                            color = Color.Transparent,
+
+                            ) {
+                            Text(
+                                "기본 프로필로 설정하기",
+                                modifier = Modifier.padding(16.dp),
+                                textAlign = TextAlign.Center,
+                                color = Color.White,
+                                fontSize = 15.sp
+                            )
+                        }
+                    }
+                }
             }
         }
 
