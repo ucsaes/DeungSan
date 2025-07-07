@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.graphics.Brush
@@ -31,6 +32,12 @@ import com.example.deungsan.R
 @Composable
 fun ListTab(context: Context, navController: NavController) {
     val mountains = JsonLoader.loadMountainsFromAssets(context)
+    val gradientHeight = 400.dp
+    val backgroundBrush = Brush.verticalGradient(
+        colors = listOf(Color.White, Color(0xFFF7F7F7), Color(0xFFF7F7F7)),
+        startY = 0f,
+        endY = with(LocalDensity.current) { gradientHeight.toPx() }
+    )
 
 
 
@@ -43,19 +50,22 @@ fun ListTab(context: Context, navController: NavController) {
         )
 
         // 제목
+        Column (modifier = Modifier
+        .background(brush=backgroundBrush)) {
 
             Text(
                 text = "명산 리스트",
                 fontSize = 20.sp,
                 color = Color.Black,
                 modifier = Modifier
-                    .background(Color.White)
+                    .background(Color.Transparent)
                     .padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
             )
 
 
-        // 리스트 표시 (기존)
-        MountainList(mountains = mountains, navController = navController)
+            // 리스트 표시 (기존)
+            MountainList(mountains = mountains, navController = navController)
+        }
     }
 
 }

@@ -156,8 +156,8 @@ fun TabWithSwipe(context: Context) {
                         state = pagerState,
                         count = items.size,
                         modifier = Modifier
-                            .background(color=Color.White)
                             .padding(innerPadding)
+                            .background(brush=backgroundBrush)
                     ) { page ->
                         when (page) {
                             0 -> ListTab(context, navController)
