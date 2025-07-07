@@ -190,6 +190,7 @@ fun MyReviewPage(navController: NavController) {
     val myReviews = reviews.filter { it.author == currentUser }  // 내 리뷰만 필터링
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -218,7 +219,7 @@ fun MyReviewPage(navController: NavController) {
                 .fillMaxSize()
                 .background(Color(0xFFF7F7F7))
         ) {
-            ReviewGallery(myReviews, navController)
+            ReviewGallery(myReviews, navController, hiddenReviewIds = emptyList())
         }
     }
 }

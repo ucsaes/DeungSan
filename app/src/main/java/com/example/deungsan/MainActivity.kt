@@ -102,6 +102,7 @@ class MainActivity : ComponentActivity() {
             startY = 0f,
             endY = with(LocalDensity.current) { gradientHeight.toPx() }
         )
+        val hiddenReviewIds = remember { mutableStateListOf<Int>() }
 
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -167,7 +168,7 @@ class MainActivity : ComponentActivity() {
                         ) { page ->
                             when (page) {
                                 0 -> ListTab(context, navController)
-                                1 -> GalleryTab(context, navController)
+                                1 -> GalleryTab(context, navController, hiddenReviewIds )
                                 2 -> MyPageTab(context, navController)
                             }
                         }
@@ -217,8 +218,9 @@ class MainActivity : ComponentActivity() {
                         ReviewDetailScreen(
                             reviewId = it,
                             navController = navController,     // 여기에서 navController 전달
-                            currentUser = LocalCurrentUser.current        // 현재 사용자 이름 전달
-                        )
+                            currentUser = LocalCurrentUser.current,        // 현재 사용자 이름 전달
+                            hiddenReviewIds = hiddenReviewIds
+                            )
                     }
                 }
 

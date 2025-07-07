@@ -53,20 +53,28 @@ inline fun <T> List<T>.partitionIndexed(predicate: (Int, T) -> Boolean): Pair<Li
 }
 
 @Composable
-fun ReviewGallery(reviews: List<Review>,navController: NavController) {
+fun ReviewGallery(
+    reviews: List<Review>,
+    navController: NavController,
+    hiddenReviewIds: List<Int> // ← 추가
+) {
+    val visibleReviews = remember(reviews, hiddenReviewIds) {
+        reviews.filterNot { it.id in hiddenReviewIds }
+    }
+
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(4.dp),
         verticalItemSpacing = 4.dp,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        items(reviews.size) { index ->
-            ReviewItem(reviews[index], navController)
+        items(visibleReviews.size) { index ->
+            ReviewItem(visibleReviews[index], navController)
         }
     }
 }
+
 
 @Composable
 fun ReviewItem(review: Review, navController: NavController) {
