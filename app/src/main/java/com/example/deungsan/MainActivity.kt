@@ -130,7 +130,9 @@ fun TabWithSwipe(context: Context) {
                                         label = { Text(label) },
                                         colors = NavigationBarItemDefaults.colors(
                                             selectedIconColor = GreenPrimaryDark,
+                                            unselectedIconColor = Color(0xFFADADAD),
                                             selectedTextColor = GreenPrimaryDark,
+                                            unselectedTextColor = Color(0xFFADADAD),
                                             indicatorColor = Color.Transparent
                                         )
                                     )
