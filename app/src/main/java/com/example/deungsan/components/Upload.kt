@@ -20,19 +20,24 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialogDefaults.containerColor
 import androidx.compose.material3.ListItemDefaults.contentColor
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.PathSegment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.deungsan.data.loader.JsonLoader
 import com.example.deungsan.data.model.Review
 import com.google.gson.Gson
 import java.io.File
-
+import com.example.deungsan.ui.theme.GreenPrimaryDark
 @Composable
 fun AddReviewButton(
     modifier: Modifier = Modifier,
@@ -41,7 +46,7 @@ fun AddReviewButton(
     FloatingActionButton(
         onClick = onClick,
         modifier = modifier,
-        containerColor = Color(0xFFA7D5A9),     // 연녹색
+        containerColor = GreenPrimaryDark,
         shape = RoundedCornerShape(25.dp),
         contentColor = Color.White,      // 흰색 아이콘,
     ) {
@@ -52,9 +57,13 @@ fun AddReviewButton(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddReviewScreen(currentUser: String,
-                    onReviewAdded: () -> Unit) {
+fun AddReviewScreen(
+    currentUser: String,
+    navController: NavController,
+    onReviewAdded: () -> Unit
+) {
     val context = LocalContext.current
     var text by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
@@ -65,83 +74,111 @@ fun AddReviewScreen(currentUser: String,
         imageUri = uri
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        Spacer(modifier = Modifier.height(80.dp))
-        Text("등산 기록", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(8.dp))
+    // 상단 앱바
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("등산기록", fontSize = 20.sp) },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.Close, contentDescription = "취소")
+                    }
+                },colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFFF7F7F7)
+                ),
+                actions = {
+                    val isEnabled = text.isNotBlank() && imageUri != null
+                    TextButton(
+                        onClick = {
+                            val reviews = JsonLoader.loadReviewsFromAssets(context).toMutableList()
+                            val newId = (reviews.maxByOrNull { it.id }?.id ?: 0) + 1
+                            val fileName = "$newId.jpeg"
 
+                            imageUri?.let { uri ->
+                                val inputStream = context.contentResolver.openInputStream(uri)
+                                val file = File(context.filesDir, "reviews/$fileName")
+                                file.parentFile?.mkdirs()
+                                val outputStream = file.outputStream()
+                                inputStream?.copyTo(outputStream)
+                                inputStream?.close()
+                                outputStream.close()
+                            }
 
-        OutlinedTextField(
-            value = text,
-            onValueChange = { text = it },
-            label = { Text("내용") },
-            modifier = Modifier.fillMaxWidth(),
-            minLines = 1
-        )
-
-        Spacer(Modifier.height(8.dp))
-
-        Button(
-            onClick = { imagePickerLauncher.launch("image/*") },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFA7D5A9), // 연녹색
-                contentColor = Color.White         // 텍스트 색상 (선택)
+                            val newReview = Review(
+                                id = newId,
+                                author = currentUser,
+                                text = text,
+                                imagePath = fileName
+                            )
+                            reviews.add(newReview)
+                            saveReviewsToFile(context, reviews)
+                            onReviewAdded()
+                        },
+                        enabled = isEnabled
+                    ) {
+                        Text("제출", color = if (isEnabled) GreenPrimaryDark else Color.Gray, fontSize = 20.sp)
+                    }
+                }
             )
+        },
+        containerColor = Color(0xFFF7F7F7)
+    ) { innerPadding ->
+
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp)
         ) {
-            Text("이미지 선택")
-        }
-        imageUri?.let {
-            Spacer(modifier = Modifier.height(8.dp))
-            Image(
-                painter = rememberAsyncImagePainter(it),
-                contentDescription = null,
+
+            // 사진 업로드 영역
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
-            )
-        }
-
-        Spacer(Modifier.height(12.dp))
-
-        Button(
-            onClick = {
-                val reviews = JsonLoader.loadReviewsFromAssets(context).toMutableList()
-                val newId = (reviews.maxByOrNull { it.id }?.id ?: 0) + 1
-                val fileName = "$newId.jpeg"
-
-                // 이미지 파일 저장
-                imageUri?.let { uri ->
-                    val inputStream = context.contentResolver.openInputStream(uri)
-                    val file = File(context.filesDir, "reviews/$fileName")
-                    file.parentFile?.mkdirs()
-                    val outputStream = file.outputStream()
-                    inputStream?.copyTo(outputStream)
-                    inputStream?.close()
-                    outputStream.close()
+                    .aspectRatio(4f/3f) //가로:세로
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color.LightGray)
+                    .clickable { imagePickerLauncher.launch("image/*") },
+                contentAlignment = Alignment.Center
+            ) {
+                if (imageUri == null) {
+                    Text("사진을 넣어주세요", color = Color.White)
+                } else {
+                    Image(
+                        painter = rememberAsyncImagePainter(imageUri),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
                 }
+            }
 
-                // 리뷰 추가
-                val newReview = Review(
-                    id = newId,
-                    author = currentUser,
-                    text = text,
-                    imagePath = fileName
+            Spacer(Modifier.height(24.dp))
+
+            // 내용 입력
+            OutlinedTextField(
+                value = text,
+                onValueChange = { text = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp),
+                placeholder = { Text("내용을 적어주세요") },
+                colors = TextFieldDefaults.colors(
+                    cursorColor = GreenPrimaryDark,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent
                 )
-                reviews.add(newReview)
-
-                // JSON 저장
-                saveReviewsToFile(context, reviews)
-
-                onReviewAdded()
-            },
-            enabled = text.isNotBlank() && imageUri != null
-        ) {
-            Text("등록")
+            )
         }
     }
 }
+
+
+
+
 
 fun saveReviewsToFile(context: Context, reviews: List<Review>) {
     val json = Gson().toJson(reviews)
