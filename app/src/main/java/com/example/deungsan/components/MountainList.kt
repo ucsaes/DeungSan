@@ -42,7 +42,7 @@ import kotlin.text.contains
 
 
 @Composable
-fun MountainList(viewModel: MountainViewModel = viewModel(), mountains: List<Mountain>, navController: NavController, onlyFav: Boolean = false) {
+fun MountainList(viewModel: MountainViewModel = viewModel(), mountains: List<Mountain>, navController: NavController, onlyFav: Boolean = false, searchQuery: String ="") {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         viewModel.loadFavorites(context)
@@ -50,13 +50,18 @@ fun MountainList(viewModel: MountainViewModel = viewModel(), mountains: List<Mou
     val favorites by viewModel.favorites.collectAsState()
 
 
-    val gradientHeight = 400.dp
+
+
+    val filteredMountains = remember(searchQuery, mountains) {
+        if (searchQuery.isBlank()) mountains
+        else mountains.filter { it.name.contains(searchQuery, ignoreCase = true) }
+    }
 
 
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
-        items(mountains) { mountain ->
+        items(filteredMountains) { mountain ->
             if (!onlyFav || (mountain.name in favorites)) {
                 MountainItem(
                     mountain = mountain,
