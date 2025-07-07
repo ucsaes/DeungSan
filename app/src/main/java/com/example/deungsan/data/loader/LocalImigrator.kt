@@ -36,6 +36,7 @@ fun copyJsonIfNotExists(context: Context) {
         inputStream.close()
         outputStream.close()
     }
+    copyAssetsFolder(context, "reviews", "reviews")
 
     val CACHED_FILE = "mountain_with_summary.json"
     val cacheFile = File(context.filesDir, CACHED_FILE)
