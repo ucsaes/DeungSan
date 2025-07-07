@@ -46,8 +46,11 @@ import androidx.navigation.navArgument
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalDensity
 import com.example.deungsan.components.AddReviewScreen
 import com.example.deungsan.components.ReviewDetailScreen
+import com.example.deungsan.tabs.MyFavPage
 
 
 class MainActivity : ComponentActivity() {
@@ -86,6 +89,13 @@ fun TabWithSwipe(context: Context) {
     val pagerState = rememberPagerState(initialPage = 0)
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
+
+    val gradientHeight = 400.dp
+    val backgroundBrush = Brush.verticalGradient(
+        colors = listOf(Color.White, Color(0xFFF7F7F7), Color(0xFFF7F7F7)),
+        startY = 0f,
+        endY = with(LocalDensity.current) { gradientHeight.toPx() }
+    )
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -146,8 +156,8 @@ fun TabWithSwipe(context: Context) {
                         state = pagerState,
                         count = items.size,
                         modifier = Modifier
+                            .background(color=Color.White)
                             .padding(innerPadding)
-                            .background(Color(0xFFFFFFFF))
                     ) { page ->
                         when (page) {
                             0 -> ListTab(context, navController)
@@ -221,6 +231,24 @@ fun TabWithSwipe(context: Context) {
                 AddReviewScreen(onReviewAdded = {
                     navController.popBackStack() // 등록 후 뒤로가기
                 })
+            }
+
+            composable(
+                route = "viewFavorite",
+                enterTransition = {
+                    slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
+                },
+                exitTransition = {
+                    slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                }
+            ) {
+                MyFavPage(context,navController)
             }
         }
     }
