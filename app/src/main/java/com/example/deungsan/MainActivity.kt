@@ -228,23 +228,36 @@ class MainActivity : ComponentActivity() {
                 composable(
                     route = "addReview",
                     enterTransition = {
-                        slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
+                        slideInVertically(
+                            initialOffsetY = { it },           // 아래에서 위로 등장
+                            animationSpec = tween(300)
+                        )
                     },
                     exitTransition = {
-                        slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+                        slideOutVertically(
+                            targetOffsetY = { -it },           // 위로 사라짐
+                            animationSpec = tween(300)
+                        )
                     },
                     popEnterTransition = {
-                        slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+                        slideInVertically(
+                            initialOffsetY = { -it },          // 위에서 아래로 등장 (뒤로가기로 돌아올 때)
+                            animationSpec = tween(300)
+                        )
                     },
                     popExitTransition = {
-                        slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                        slideOutVertically(
+                            targetOffsetY = { it },            // 아래로 사라짐 (뒤로가기)
+                            animationSpec = tween(300)
+                        )
                     }
-                ) {
+                ) { backStackEntry ->
                     AddReviewScreen(
                         onReviewAdded = {
-                            navController.popBackStack() // 등록 후 뒤로가기
+                            navController.popBackStack()
                         },
-                        currentUser = LocalCurrentUser.current
+                        currentUser = LocalCurrentUser.current,
+                        navController = navController
                     )
                 }
 
@@ -264,7 +277,8 @@ class MainActivity : ComponentActivity() {
                     popExitTransition = {
                         slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
                     }
-                ) { backStackEntry ->
+                )
+                { backStackEntry ->
                     val reviewId = backStackEntry.arguments?.getString("reviewId")?.toIntOrNull()
                     if (reviewId != null) {
                         EditReviewScreen(
@@ -272,7 +286,8 @@ class MainActivity : ComponentActivity() {
                             onReviewUpdated = {
                                 navController.popBackStack() // 수정 후 뒤로가기
                             },
-                            currentUser = LocalCurrentUser.current
+                            currentUser = LocalCurrentUser.current,
+                            navController = navController
                         )
                     } else {
                         // 예외 처리: ID 파싱 실패
@@ -318,6 +333,9 @@ class MainActivity : ComponentActivity() {
                     MyReviewPage(navController)
                 }
             }
+
+
+
         }
     }
 }
