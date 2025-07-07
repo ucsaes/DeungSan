@@ -53,248 +53,249 @@ import com.example.deungsan.components.AddReviewScreen
 import com.example.deungsan.components.ReviewDetailScreen
 import com.example.deungsan.tabs.MyFavPage
 
+val LocalCurrentUser = compositionLocalOf { "unknown" }  // 기본값
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         copyJsonIfNotExists(this)
         setContent {
-            DeungSanTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    TabWithSwipe(this)
+            CompositionLocalProvider(LocalCurrentUser provides "한다인이") {
+                DeungSanTheme {
+                    Surface(modifier = Modifier.fillMaxSize()) {
+                        TabWithSwipe(this)
+                    }
+                }
+            }
+        }
+    }
+
+
+    // 탭 + 스와이프 화면
+    @OptIn(ExperimentalPagerApi::class, ExperimentalAnimationApi::class)
+    @Composable
+    fun TabWithSwipe(context: Context) {
+        val items = listOf("명산", "소통창구", "마이페이지")
+        val filledIcons = listOf(
+            Icons.Filled.Terrain,
+            Icons.Filled.Article,
+            Icons.Filled.Person
+        )
+        val outlinedIcons = listOf(
+            Icons.Outlined.Terrain,
+            Icons.Outlined.Article,
+            Icons.Outlined.Person
+        )
+
+        val density = LocalConfiguration.current.densityDpi
+
+        val pagerState = rememberPagerState(initialPage = 0)
+        val coroutineScope = rememberCoroutineScope()
+        val navController = rememberNavController()
+
+        val gradientHeight = 400.dp
+        val backgroundBrush = Brush.verticalGradient(
+            colors = listOf(Color.White, Color(0xFFF7F7F7), Color(0xFFF7F7F7)),
+            startY = 0f,
+            endY = with(LocalDensity.current) { gradientHeight.toPx() }
+        )
+
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color(0xFFF5F5F5)
+        ) {
+            //화면 간 전환 정의
+            AnimatedNavHost(
+                navController = navController,
+                startDestination = "mainTabs",
+                enterTransition = { fadeIn(animationSpec = tween(300)) },
+                exitTransition = { fadeOut(animationSpec = tween(300)) },
+                popEnterTransition = { fadeIn(animationSpec = tween(300)) },
+                popExitTransition = { fadeOut(animationSpec = tween(300)) }
+            ) {
+                composable("mainTabs") {
+                    Scaffold(
+                        bottomBar = {
+                            //하단 탭 그림자, 톤
+                            Surface(
+                                tonalElevation = 4.dp,
+                                shadowElevation = 20.dp
+                            ) {
+                                NavigationBar(
+                                    modifier = Modifier.height(100.dp),
+                                    containerColor = Color.White
+                                ) {
+                                    items.forEachIndexed { index, label ->
+                                        NavigationBarItem(
+                                            selected = pagerState.currentPage == index,
+                                            //탭 클릭시 이동
+                                            onClick = {
+                                                coroutineScope.launch {
+                                                    pagerState.animateScrollToPage(index)
+                                                }
+                                            },
+                                            icon = {
+                                                val icon = if (pagerState.currentPage == index)
+                                                    filledIcons[index]
+                                                else
+                                                    outlinedIcons[index]
+                                                Icon(icon, contentDescription = label)
+                                            },
+                                            label = { Text(label) },
+                                            colors = NavigationBarItemDefaults.colors(
+                                                selectedIconColor = GreenPrimaryDark,
+                                                unselectedIconColor = Color(0xFFADADAD),
+                                                selectedTextColor = GreenPrimaryDark,
+                                                unselectedTextColor = Color(0xFFADADAD),
+                                                indicatorColor = Color.Transparent
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    ) { innerPadding ->
+                        HorizontalPager(
+                            state = pagerState,
+                            count = items.size,
+                            modifier = Modifier
+                                .padding(innerPadding)
+                                .background(brush = backgroundBrush)
+                        ) { page ->
+                            when (page) {
+                                0 -> ListTab(context, navController)
+                                1 -> GalleryTab(context, navController)
+                                2 -> MyPageTab(context, navController)
+                            }
+                        }
+                    }
+                }
+
+                // 탭1 상세 페이지로 이동
+                composable(
+                    route = "detail/{name}",
+                    arguments = listOf(navArgument("name") { type = NavType.StringType }),
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popEnterTransition = {
+                        slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                    }
+                ) { backStackEntry ->
+                    val name = backStackEntry.arguments?.getString("name") ?: ""
+                    MountainDetailScreen(name)
+                }
+
+                //탭2 상세페이지로 이동
+                composable(
+                    route = "reviewDetail/{reviewId}",
+                    arguments = listOf(navArgument("reviewId") { type = NavType.IntType }),
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popEnterTransition = {
+                        slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                    }
+                ) { backStackEntry ->
+                    val reviewId = backStackEntry.arguments?.getInt("reviewId")
+                    reviewId?.let {
+                        ReviewDetailScreen(
+                            reviewId = it,
+                            navController = navController,     // 여기에서 navController 전달
+                            currentUser = LocalCurrentUser.current        // 현재 사용자 이름 전달
+                        )
+                    }
+                }
+
+                //탭2 리뷰 추가
+                composable(
+                    route = "addReview",
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popEnterTransition = {
+                        slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                    }
+                ) {
+                    AddReviewScreen(
+                        onReviewAdded = {
+                            navController.popBackStack() // 등록 후 뒤로가기
+                        },
+                        currentUser = LocalCurrentUser.current
+                    )
+                }
+
+
+                // 탭2 리뷰 수정
+                composable(
+                    route = "editReview/{reviewId}",
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popEnterTransition = {
+                        slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                    }
+                ) { backStackEntry ->
+                    val reviewId = backStackEntry.arguments?.getString("reviewId")?.toIntOrNull()
+                    if (reviewId != null) {
+                        EditReviewScreen(
+                            reviewId = reviewId,
+                            onReviewUpdated = {
+                                navController.popBackStack() // 수정 후 뒤로가기
+                            },
+                            currentUser = LocalCurrentUser.current
+                        )
+                    } else {
+                        // 예외 처리: ID 파싱 실패
+                        Text("잘못된 리뷰 ID입니다.")
+                    }
+                }
+
+
+
+                composable(
+                    route = "viewFavorite",
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popEnterTransition = {
+                        slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                    }
+                ) {
+                    MyFavPage(context, navController)
                 }
             }
         }
     }
 }
-
-
-// 탭 + 스와이프 화면
-@OptIn(ExperimentalPagerApi::class, ExperimentalAnimationApi::class)
-@Composable
-fun TabWithSwipe(context: Context) {
-    val items = listOf("명산", "소통창구", "마이페이지")
-    val filledIcons = listOf(
-        Icons.Filled.Terrain,
-        Icons.Filled.Article,
-        Icons.Filled.Person
-    )
-    val outlinedIcons = listOf(
-        Icons.Outlined.Terrain,
-        Icons.Outlined.Article,
-        Icons.Outlined.Person
-    )
-
-    val density = LocalConfiguration.current.densityDpi
-
-    val pagerState = rememberPagerState(initialPage = 0)
-    val coroutineScope = rememberCoroutineScope()
-    val navController = rememberNavController()
-
-    val gradientHeight = 400.dp
-    val backgroundBrush = Brush.verticalGradient(
-        colors = listOf(Color.White, Color(0xFFF7F7F7), Color(0xFFF7F7F7)),
-        startY = 0f,
-        endY = with(LocalDensity.current) { gradientHeight.toPx() }
-    )
-
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Color(0xFFF5F5F5)
-    ) {
-        //화면 간 전환 정의
-        AnimatedNavHost(
-            navController = navController,
-            startDestination = "mainTabs",
-            enterTransition = { fadeIn(animationSpec = tween(300)) },
-            exitTransition = { fadeOut(animationSpec = tween(300)) },
-            popEnterTransition = { fadeIn(animationSpec = tween(300)) },
-            popExitTransition = { fadeOut(animationSpec = tween(300)) }
-        ) {
-            composable("mainTabs") {
-                Scaffold(
-                    bottomBar = {
-                        //하단 탭 그림자, 톤
-                        Surface(
-                            tonalElevation = 4.dp,
-                            shadowElevation = 20.dp
-                        ) {
-                            NavigationBar(
-                                modifier = Modifier.height(100.dp),
-                                containerColor = Color.White
-                            ) {
-                                items.forEachIndexed { index, label ->
-                                    NavigationBarItem(
-                                        selected = pagerState.currentPage == index,
-                                        //탭 클릭시 이동
-                                        onClick = {
-                                            coroutineScope.launch {
-                                                pagerState.animateScrollToPage(index)
-                                            }
-                                        },
-                                        icon = {
-                                            val icon = if (pagerState.currentPage == index)
-                                                filledIcons[index]
-                                            else
-                                                outlinedIcons[index]
-                                            Icon(icon, contentDescription = label)
-                                        },
-                                        label = { Text(label) },
-                                        colors = NavigationBarItemDefaults.colors(
-                                            selectedIconColor = GreenPrimaryDark,
-                                            unselectedIconColor = Color(0xFFADADAD),
-                                            selectedTextColor = GreenPrimaryDark,
-                                            unselectedTextColor = Color(0xFFADADAD),
-                                            indicatorColor = Color.Transparent
-                                        )
-                                    )
-                                }
-                            }
-                        }
-                    }
-                ) { innerPadding ->
-                    HorizontalPager(
-                        state = pagerState,
-                        count = items.size,
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .background(brush = backgroundBrush)
-                    ) { page ->
-                        when (page) {
-                            0 -> ListTab(context, navController)
-                            1 -> GalleryTab(context, navController)
-                            2 -> MyPageTab(context, navController)
-                        }
-                    }
-                }
-            }
-
-            // 탭1 상세 페이지로 이동
-            composable(
-                route = "detail/{name}",
-                arguments = listOf(navArgument("name") { type = NavType.StringType }),
-                enterTransition = {
-                    slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
-                },
-                exitTransition = {
-                    slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
-                },
-                popEnterTransition = {
-                    slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
-                }
-            ) { backStackEntry ->
-                val name = backStackEntry.arguments?.getString("name") ?: ""
-                MountainDetailScreen(name)
-            }
-
-            //탭2 상세페이지로 이동
-            composable(
-                route = "reviewDetail/{reviewId}",
-                arguments = listOf(navArgument("reviewId") { type = NavType.IntType }),
-                enterTransition = {
-                    slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
-                },
-                exitTransition = {
-                    slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
-                },
-                popEnterTransition = {
-                    slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
-                }
-            ) { backStackEntry ->
-                val reviewId = backStackEntry.arguments?.getInt("reviewId")
-                reviewId?.let {
-                    val currentUser = "한다인이"
-                    ReviewDetailScreen(
-                        reviewId = it,
-                        navController = navController,     // 여기에서 navController 전달
-                        currentUser = currentUser          // 현재 사용자 이름 전달
-                    )
-                }
-            }
-
-            //탭2 리뷰 추가
-            composable(
-                route = "addReview",
-                enterTransition = {
-                    slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
-                },
-                exitTransition = {
-                    slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
-                },
-                popEnterTransition = {
-                    slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
-                }
-            ) {
-                val currentUser = "한다인이"
-                AddReviewScreen(
-                    onReviewAdded = {
-                        navController.popBackStack() // 등록 후 뒤로가기
-                    },
-                    currentUser = currentUser
-                )
-            }
-
-
-            // 탭2 리뷰 수정
-            composable(
-                route = "editReview/{reviewId}",
-                enterTransition = {
-                    slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
-                },
-                exitTransition = {
-                    slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
-                },
-                popEnterTransition = {
-                    slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
-                }
-            ) { backStackEntry ->
-                val reviewId = backStackEntry.arguments?.getString("reviewId")?.toIntOrNull()
-                val currentUser = "한다인이"
-                if (reviewId != null) {
-                    EditReviewScreen(
-                        reviewId = reviewId,
-                        onReviewUpdated = {
-                            navController.popBackStack() // 수정 후 뒤로가기
-                        },
-                        currentUser = currentUser
-                    )
-                } else {
-                    // 예외 처리: ID 파싱 실패
-                    Text("잘못된 리뷰 ID입니다.")
-                }
-            }
-
-
-
-            composable(
-                route = "viewFavorite",
-                enterTransition = {
-                    slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
-                },
-                exitTransition = {
-                    slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
-                },
-                popEnterTransition = {
-                    slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
-                }
-            ) {
-                MyFavPage(context,navController)
-            }
-        }
-    }
-    }
