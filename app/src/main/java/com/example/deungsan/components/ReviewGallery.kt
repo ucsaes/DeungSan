@@ -66,7 +66,7 @@ fun ReviewGallery(
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(2.dp),
+        contentPadding = PaddingValues(10.dp),
         verticalItemSpacing = 4.dp,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
@@ -92,13 +92,13 @@ fun ReviewItem(review: Review, navController: NavController) {
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.3f))
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
+        Column(modifier = Modifier.padding(10.dp)) {
 
             // 작성자 이름 + 산 이름 한 줄에 양끝 배치
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 3.dp, vertical = 5.dp),
+                    .padding(start = 3.dp, end = 3.dp, top = 2.dp, bottom = 7.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -108,13 +108,13 @@ fun ReviewItem(review: Review, navController: NavController) {
 
                 Box(
                     modifier = Modifier
-                        .background(Color.LightGray, RoundedCornerShape(6.dp))
-                        .padding(horizontal = 7.dp, vertical = 1.dp)
+                        .background(Color.LightGray, RoundedCornerShape(8.dp))
+                        .padding(horizontal = 5.dp, vertical = (0.5).dp)
                 ) {
                     Text(
                         text = review.mountain,
                         fontSize = 12.sp,
-                        color = Color.White,
+                        color = Color.White
                     )
                 }
             }
@@ -127,7 +127,9 @@ fun ReviewItem(review: Review, navController: NavController) {
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight(),
+                    .wrapContentHeight()
+
+                    ,
                 contentScale = ContentScale.Fit
             )
 
@@ -139,6 +141,13 @@ fun ReviewItem(review: Review, navController: NavController) {
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(horizontal = 3.dp, vertical = 2.dp)
+            )
+
+            Text(
+                text = "(더보기)",
+                color = Color.Gray,
+                fontSize = 14.sp,
                 modifier = Modifier.padding(horizontal = 3.dp, vertical = 2.dp)
             )
         }
