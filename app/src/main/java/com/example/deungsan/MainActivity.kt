@@ -55,7 +55,6 @@ import com.example.deungsan.components.AddReviewScreen
 import com.example.deungsan.components.ReviewDetailScreen
 import com.example.deungsan.data.loader.JsonLoader
 import com.example.deungsan.tabs.BlockedReviewTab
-import com.example.deungsan.tabs.HiddenReviewGallery
 import com.example.deungsan.tabs.MyFavPage
 import com.example.deungsan.tabs.MyReviewPage
 
