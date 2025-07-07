@@ -1,5 +1,6 @@
 package com.example.deungsan
 
+import EditReviewScreen
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -196,7 +197,12 @@ fun TabWithSwipe(context: Context) {
             ) { backStackEntry ->
                 val reviewId = backStackEntry.arguments?.getInt("reviewId")
                 reviewId?.let {
-                    ReviewDetailScreen(it)
+                    val currentUser = "한다인이"
+                    ReviewDetailScreen(
+                        reviewId = it,
+                        navController = navController,     // 여기에서 navController 전달
+                        currentUser = currentUser          // 현재 사용자 이름 전달
+                    )
                 }
             }
 
@@ -220,6 +226,39 @@ fun TabWithSwipe(context: Context) {
                     navController.popBackStack() // 등록 후 뒤로가기
                 })
             }
+
+
+            // 탭2 리뷰 수정
+            composable(
+                route = "editReview/{reviewId}",
+                enterTransition = {
+                    slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
+                },
+                exitTransition = {
+                    slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                }
+            ) { backStackEntry ->
+                val reviewId = backStackEntry.arguments?.getString("reviewId")?.toIntOrNull()
+                if (reviewId != null) {
+                    EditReviewScreen(
+                        reviewId = reviewId,
+                        onReviewUpdated = {
+                            navController.popBackStack() // 수정 후 뒤로가기
+                        }
+                    )
+                } else {
+                    // 예외 처리: ID 파싱 실패
+                    Text("잘못된 리뷰 ID입니다.")
+                }
+            }
+
+
         }
     }
     }

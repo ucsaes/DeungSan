@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -19,18 +20,26 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.deungsan.data.loader.JsonLoader
 import com.example.deungsan.data.model.Mountain
+import com.example.deungsan.data.model.Review
+import com.google.gson.Gson
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReviewDetailScreen(reviewId: Int) {
+fun ReviewDetailScreen(
+    reviewId: Int,
+    navController: NavController,
+    currentUser: String
+) {
     val context = LocalContext.current
     val reviews = remember { JsonLoader.loadReviewsFromAssets(context) }
     val review = reviews.find { it.id == reviewId }
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    var showMenu by remember { mutableStateOf(false) }
 
     if (review == null) {
         Scaffold(
@@ -39,10 +48,7 @@ fun ReviewDetailScreen(reviewId: Int) {
                     title = { Text("리뷰 없음") },
                     navigationIcon = {
                         IconButton(onClick = { backDispatcher?.onBackPressed() }) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "뒤로가기"
-                            )
+                            Icon(Icons.Default.ArrowBack, contentDescription = "뒤로가기")
                         }
                     }
                 )
@@ -71,10 +77,37 @@ fun ReviewDetailScreen(reviewId: Int) {
                 },
                 navigationIcon = {
                     IconButton(onClick = { backDispatcher?.onBackPressed() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "뒤로가기"
-                        )
+                        Icon(Icons.Default.ArrowBack, contentDescription = "뒤로가기")
+                    }
+                },
+                actions = {
+                    if (review.author == currentUser) {
+                        Box {
+                            IconButton(onClick = { showMenu = true }) {
+                                Icon(Icons.Default.MoreVert, contentDescription = "More")
+                            }
+
+                            DropdownMenu(
+                                expanded = showMenu,
+                                onDismissRequest = { showMenu = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("수정") },
+                                    onClick = {
+                                        showMenu = false
+                                        navController.navigate("editReview/${review.id}")
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("삭제") },
+                                    onClick = {
+                                        showMenu = false
+                                        deleteReview(context, review)
+                                        navController.popBackStack()
+                                    }
+                                )
+                            }
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -92,21 +125,40 @@ fun ReviewDetailScreen(reviewId: Int) {
                 .fillMaxSize()
                 .background(Color(0xFFF7F7F7))
         ) {
-            val context = LocalContext.current
-
-
             AsyncImage(
                 model = "file://${File(context.filesDir, "reviews/${review.imagePath}")}",
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.Fit // 원본 비율 유지
+                    .heightIn(min = 200.dp),
+                contentScale = ContentScale.Fit
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = review.author,fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text(text = review.author, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             Text(text = review.text, style = MaterialTheme.typography.bodyLarge)
-
         }
     }
 }
+
+fun deleteReview(context: Context, review: Review) {
+    // 1. 기존 리뷰 목록 불러오기
+    val reviews = JsonLoader.loadReviewsFromAssets(context).toMutableList()
+
+    // 2. 삭제할 리뷰 제거
+    reviews.removeIf { it.id == review.id }
+
+    // 3. 리뷰 이미지 파일 삭제
+    val imageFile = File(context.filesDir, "reviews/${review.imagePath}")
+    if (imageFile.exists()) {
+        imageFile.delete()
+    }
+
+    // 4. 수정된 리뷰 목록 저장
+    val json = Gson().toJson(reviews)
+    val file = File(context.filesDir, "reviews.json")
+    file.writeText(json)
+}
+
+
+
+

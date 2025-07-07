@@ -115,10 +115,7 @@ fun ReviewItem(review: Review, navController: NavController) {
                 fontSize = 14.sp
             )
 
-
-
-
-
         }
     }
-}
+    }
+
