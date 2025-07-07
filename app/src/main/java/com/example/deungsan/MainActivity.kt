@@ -52,6 +52,7 @@ import androidx.compose.ui.platform.LocalDensity
 import com.example.deungsan.components.AddReviewScreen
 import com.example.deungsan.components.ReviewDetailScreen
 import com.example.deungsan.tabs.MyFavPage
+import com.example.deungsan.tabs.MyReviewPage
 
 val LocalCurrentUser = compositionLocalOf { "unknown" }  // 기본값
 
@@ -295,6 +296,24 @@ class MainActivity : ComponentActivity() {
                 ) {
                     MyFavPage(context, navController)
                 }
+            }
+
+            composable(
+                route = "viewMyReview",
+                enterTransition = {
+                    slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
+                },
+                exitTransition = {
+                    slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                }
+            ) {
+                MyReviewPage(context,navController)
             }
         }
     }
