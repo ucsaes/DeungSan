@@ -151,7 +151,7 @@ fun TabWithSwipe(context: Context) {
                         when (page) {
                             0 -> ListTab(context, navController)
                             1 -> GalleryTab(context, navController)
-                            2 -> MyPageTab(context)
+                            2 -> MyPageTab(context, navController)
                         }
                     }
                 }

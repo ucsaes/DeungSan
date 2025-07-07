@@ -8,13 +8,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import android.content.Context
+import androidx.navigation.NavController
+import com.example.deungsan.components.MountainList
+import com.example.deungsan.data.loader.JsonLoader
 
 @Composable
-fun MyPageTab(context: Context) {
+fun MyPageTab(context: Context, navController: NavController) {
+    val mountains = JsonLoader.loadMountainsFromAssets(context)
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text("여기는 마이페이지 탭입니다!", fontSize = 20.sp)
+        MountainList(mountains = mountains, navController = navController, onlyFav = true)
     }
 }
