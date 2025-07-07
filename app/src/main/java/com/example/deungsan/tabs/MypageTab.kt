@@ -8,7 +8,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import android.content.Context
+import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -41,6 +45,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +61,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.example.deungsan.components.MountainList
 import com.example.deungsan.components.ReviewGallery
 import com.example.deungsan.components.deleteReview
@@ -65,14 +72,37 @@ import com.example.deungsan.LocalCurrentUser
 import com.example.deungsan.ui.theme.GreenPrimaryDark
 import java.nio.file.WatchEvent
 import com.example.deungsan.R
+import java.io.FileOutputStream
 import kotlin.math.exp
 
 
 @Composable
 fun MyPageTab(context: Context, navController: NavController) {
-    val profileFile = File(context.filesDir, "user_profile")
-    val imageSource: Any = if (profileFile.exists()) profileFile else R.drawable.default_profile
     var expanded by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val profileFile = File(context.filesDir, "user_profile.jpg")
+    var reloadKey by remember { mutableStateOf(System.currentTimeMillis()) }
+
+    val imageRequest = if (profileFile.exists()) {
+        ImageRequest.Builder(context)
+            .data(profileFile)
+            .diskCachePolicy(CachePolicy.DISABLED)    // 디스크 캐시 끄기
+            .memoryCachePolicy(CachePolicy.DISABLED)  // 메모리 캐시 끄기
+            .setParameter("reloadKey", reloadKey)
+            .build()
+    } else {
+        ImageRequest.Builder(context)
+            .data(R.drawable.default_profile)
+            .build()
+    }
+    val uploadProfile = rememberUploadProfileLauncher(context) { success ->
+        if (success) {
+            reloadKey = System.currentTimeMillis()
+            Toast.makeText(context, "프로필 사진 저장 완료, 재실행해주세요", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "프로필 사진 저장 실패", Toast.LENGTH_SHORT).show()
+        }
+    }
 
 
     Column (
@@ -96,7 +126,7 @@ fun MyPageTab(context: Context, navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AsyncImage(
-                        model = imageSource,
+                        model = imageRequest,
                         contentDescription = "프로필 이미지",
                         modifier = Modifier
                             .size(90.dp)
@@ -118,12 +148,15 @@ fun MyPageTab(context: Context, navController: NavController) {
                         thickness = 1.dp,
                         modifier = Modifier
                             .width(230.dp)
-                            .padding(vertical = 2.dp)
+                            .padding(vertical = 0.dp)
                     )
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { /* 클릭 처리 */ },
+                            .clickable (onClick = {
+                                uploadProfile()
+                                expanded = !expanded
+                            }),
                         shape = RoundedCornerShape(8.dp),
                         color = Color.Transparent,
 
@@ -142,15 +175,22 @@ fun MyPageTab(context: Context, navController: NavController) {
                             thickness = 1.dp,
                             modifier = Modifier
                                 .width(230.dp)
-                                .padding(vertical = 2.dp)
+                                .padding(vertical = 0.dp)
                         )
                         Surface(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { /* 클릭 처리 */ },
+                                .clickable(onClick = {
+                                    val deleted = deleteProfileImage(context)
+                                    if (deleted) {
+                                        reloadKey = System.currentTimeMillis()
+                                        expanded = !expanded
+                                        Toast.makeText(context, "이미지를 기본으로 되돌렸습니다.", Toast.LENGTH_SHORT).show()
+                                    }
+                                })
+                                .padding(bottom = 8.dp),
                             shape = RoundedCornerShape(8.dp),
                             color = Color.Transparent,
-
                             ) {
                             Text(
                                 "기본 프로필로 설정하기",
@@ -290,5 +330,57 @@ fun MyReviewPage(navController: NavController) {
         ) {
             ReviewGallery(myReviews, navController, hiddenReviewIds = emptyList())
         }
+    }
+}
+
+@Composable
+fun rememberUploadProfileLauncher(
+    context: Context,
+    onResult: (Boolean) -> Unit
+): () -> Unit {
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        imageUri = uri
+    }
+
+    // Uri 변경 시 내부 저장소에 저장
+    LaunchedEffect(imageUri) {
+        imageUri?.let { uri ->
+            val success = saveUriToFilesDir(context, uri, "user_profile.jpg")
+            onResult(success)
+        }
+    }
+
+    // 함수 반환: 호출하면 사진 선택기 실행
+    return {
+        launcher.launch("image/*")
+    }
+}
+
+// 내부 저장소 저장 함수
+fun saveUriToFilesDir(context: Context, imageUri: Uri, fileName: String): Boolean {
+    return try {
+        context.contentResolver.openInputStream(imageUri)?.use { input ->
+            val file = File(context.filesDir, fileName)
+            FileOutputStream(file).use { output ->
+                input.copyTo(output)
+            }
+        }
+        true
+    } catch (e: Exception) {
+        e.printStackTrace()
+        false
+    }
+}
+
+fun deleteProfileImage(context: Context, fileName: String = "user_profile.jpg"): Boolean {
+    val file = File(context.filesDir, fileName)
+    return if (file.exists()) {
+        file.delete()
+    } else {
+        false
     }
 }
