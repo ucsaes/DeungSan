@@ -28,6 +28,7 @@ import com.example.deungsan.data.loader.JsonLoader
 import com.example.deungsan.data.model.Mountain
 import com.example.deungsan.data.model.Review
 import com.google.gson.Gson
+import kotlinx.coroutines.delay
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,6 +44,19 @@ fun ReviewDetailScreen(
     val review = reviews.find { it.id == reviewId }
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     var showMenu by remember { mutableStateOf(false) }
+
+    // 신고 상태를 로컬에서 따로 관리 (5초 후에 반영)
+    var hasReported by remember { mutableStateOf(review?.id in hiddenReviewIds) }
+    var triggerReportDelay by remember { mutableStateOf(false) }
+    LaunchedEffect(triggerReportDelay) {
+        if (triggerReportDelay) {
+            delay(5000)
+            hasReported = true
+            triggerReportDelay = false
+        }
+    }
+
+
 
     if (review == null) {
         Scaffold(
@@ -107,30 +121,34 @@ fun ReviewDetailScreen(
                                 )
                             } else {
                                 DropdownMenuItem(
-                                    text = { Text("신고") },
+                                    text = { Text(if (hasReported) "신고 취소" else "신고") },
                                     onClick = {
                                         showMenu = false
-                                        hideReview(review.id) // 숨기기 수행
-                                        Toast.makeText(context, "리뷰가 신고되었습니다.", Toast.LENGTH_SHORT).show()
-                                        navController.popBackStack()
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text("차단") },
-                                    onClick = {
-                                        showMenu = false
-                                        hideReview(review.id)
-                                        Toast.makeText(context, "${review.author} 님이 차단되었습니다.", Toast.LENGTH_SHORT).show()
-                                        navController.popBackStack()
+                                        if (hasReported) {
+                                            hiddenReviewIds.remove(review.id)
+                                            hasReported = false
+                                            Toast.makeText(context, "신고가 취소되었습니다.", Toast.LENGTH_SHORT).show()
+                                            navController.popBackStack()
+                                        } else {
+                                            hideReview(review.id) // 즉시 리스트에는 반영
+                                            Toast.makeText(context, "리뷰가 신고되었습니다.", Toast.LENGTH_SHORT).show()
+
+                                            // LaunchedEffect 작동트리거
+                                            triggerReportDelay = true
+
+                                            // 바로 화면 나가기
+                                            navController.popBackStack()
+                                        }
                                     }
                                 )
                             }
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF7F7F7))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF7F7F7)) // ✅ 이 위치에 있어야 함
             )
-        },
+        }
+        ,
         containerColor = Color(0xFFF7F7F7)
     ) { innerPadding ->
         Column(

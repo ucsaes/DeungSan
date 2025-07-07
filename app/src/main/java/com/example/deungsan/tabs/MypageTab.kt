@@ -246,9 +246,9 @@ fun MyPageTab(context: Context, navController: NavController) {
                 modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Outlined.Block, contentDescription = "신고/차단된 리뷰")
+                Icon(Icons.Outlined.Block, contentDescription = "신고된 리뷰")
                 Spacer(Modifier.width(12.dp))
-                Text("신고/차단된 리뷰")
+                Text("신고된 리뷰")
             }
         }
     }
@@ -394,29 +394,7 @@ fun deleteProfileImage(context: Context, fileName: String = "user_profile.jpg"):
     }
 }
 
-@Composable
-fun HiddenReviewGallery(
-    reviews: List<Review>,
-    navController: NavController,
-    hiddenReviewIds: List<Int>
-) {
-    val hiddenReviews = remember(reviews, hiddenReviewIds) {
-        reviews.filter { it.id in hiddenReviewIds }
-    }
-
-    LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Fixed(2),
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(4.dp),
-        verticalItemSpacing = 4.dp,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        items(hiddenReviews.size) { index ->
-            ReviewItem(hiddenReviews[index], navController)
-        }
-    }
-}
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BlockedReviewTab(
     navController: NavController,
@@ -426,16 +404,47 @@ fun BlockedReviewTab(
     val reviews = remember(hiddenReviewIds) {
         JsonLoader.loadReviewsFromAssets(context)
     }
+    val hiddenReviews = remember(reviews, hiddenReviewIds) {
+        reviews.filter { it.id in hiddenReviewIds }
+    }
+    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 20.dp)
-    ) {
-        HiddenReviewGallery(
-            reviews = reviews,
-            navController = navController,
-            hiddenReviewIds = hiddenReviewIds
-        )
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "신고된 리뷰",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = {backDispatcher?.onBackPressed() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "뒤로가기")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFFF7F7F7)
+                )
+            )
+        }
+    ) { innerPadding ->
+        LazyVerticalStaggeredGrid(
+            columns = StaggeredGridCells.Fixed(2),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            contentPadding = PaddingValues(4.dp),
+            verticalItemSpacing = 4.dp,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            items(hiddenReviews.size) { index ->
+                ReviewItem(hiddenReviews[index], navController)
+            }
+        }
     }
 }
+
+
