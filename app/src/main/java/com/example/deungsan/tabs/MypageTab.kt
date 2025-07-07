@@ -119,7 +119,6 @@ fun MyPageTab(context: Context, navController: NavController) {
             border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.3f))
         ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(
                     modifier = Modifier.padding(25.dp),
@@ -138,18 +137,11 @@ fun MyPageTab(context: Context, navController: NavController) {
                         text = "김등산",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 17.sp
                     )
-                    Text(text = "님, 반갑습니다!", color = Color.White, fontSize = 20.sp)
+                    Text(text = "님, 반갑습니다!", color = Color.White, fontSize = 17.sp)
                 }
                 if (expanded) {
-                    Divider(
-                        color = Color.White,
-                        thickness = 1.dp,
-                        modifier = Modifier
-                            .width(230.dp)
-                            .padding(vertical = 0.dp)
-                    )
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -170,13 +162,6 @@ fun MyPageTab(context: Context, navController: NavController) {
                         )
                     }
                     if (profileFile.exists()) {
-                        Divider(
-                            color = Color.White,
-                            thickness = 1.dp,
-                            modifier = Modifier
-                                .width(230.dp)
-                                .padding(vertical = 0.dp)
-                        )
                         Surface(
                             modifier = Modifier
                                 .fillMaxWidth()
