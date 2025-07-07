@@ -98,7 +98,7 @@ fun ReviewItem(review: Review, navController: NavController) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 3.dp, vertical = 2.dp),
+                    .padding(start = 3.dp, end = 3.dp, top = 2.dp, bottom = 7.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {

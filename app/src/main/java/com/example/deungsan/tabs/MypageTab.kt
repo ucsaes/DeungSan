@@ -215,7 +215,7 @@ fun MyPageTab(context: Context, navController: NavController) {
             ) {
                 Icon(Icons.Outlined.FavoriteBorder, contentDescription = null)
                 Spacer(Modifier.width(12.dp))
-                Text("즐겨찾는 산")
+                Text("가고 싶은 산")
             }
         }
 
@@ -271,7 +271,7 @@ fun MyFavPage(navController: NavController) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "등산 기록",
+                        text = "가고 싶은 산",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -319,7 +319,7 @@ fun MyReviewPage(navController: NavController) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "등산 기록",
+                        text = "내 리뷰",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
