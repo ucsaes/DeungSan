@@ -92,7 +92,7 @@ fun ReviewItem(review: Review, navController: NavController) {
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.3f))
     ) {
-        Column(modifier = Modifier.padding(.dp)) {
+        Column(modifier = Modifier.padding(10.dp)) {
 
             // 작성자 이름 + 산 이름 한 줄에 양끝 배치
             Row(
