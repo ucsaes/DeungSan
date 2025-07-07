@@ -56,7 +56,6 @@ fun AddReviewButton(
 fun AddReviewScreen(currentUser: String,
                     onReviewAdded: () -> Unit) {
     val context = LocalContext.current
-    var author by remember { mutableStateOf("") }
     var text by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -68,9 +67,8 @@ fun AddReviewScreen(currentUser: String,
 
     Column(modifier = Modifier.padding(16.dp)) {
         Spacer(modifier = Modifier.height(80.dp))
-        Text("등산 기록", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Text("등산 기록", fontSize = 20.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
-
 
 
         OutlinedTextField(
@@ -127,7 +125,7 @@ fun AddReviewScreen(currentUser: String,
                 // 리뷰 추가
                 val newReview = Review(
                     id = newId,
-                    author = author,
+                    author = currentUser,
                     text = text,
                     imagePath = fileName
                 )

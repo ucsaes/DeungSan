@@ -50,6 +50,7 @@ import com.example.deungsan.components.ReviewGallery
 import com.example.deungsan.components.deleteReview
 import com.example.deungsan.data.loader.JsonLoader
 import java.io.File
+import com.example.deungsan.LocalCurrentUser
 
 @Composable
 fun MyPageTab(context: Context, navController: NavController) {
@@ -82,7 +83,7 @@ fun MyPageTab(context: Context, navController: NavController) {
                 .clickable { navController.navigate("viewMyReview") },
             colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(25.dp),
-//            border = BorderStroke(1.5.dp, Color.LightGray.copy(alpha=0.3f)),
+            border = BorderStroke(1.dp, Color.LightGray.copy(alpha=0.3f)),
         ) {
             Row(
                 modifier = Modifier.padding(16.dp),
@@ -144,6 +145,9 @@ fun MyFavPage(navController: NavController) {
 fun MyReviewPage(navController: NavController) {
     val context = LocalContext.current
     val reviews = JsonLoader.loadReviewsFromAssets(context)
-//    navController.popBackStack()
-    ReviewGallery(reviews, navController)
+    val currentUser = LocalCurrentUser.current  // 현재 사용자 이름 가져오기
+
+    val myReviews = reviews.filter { it.author == currentUser }  // 내 리뷰만 필터링
+
+    ReviewGallery(myReviews, navController)
 }
