@@ -35,14 +35,14 @@ import java.io.File
 fun ReviewDetailScreen(
     reviewId: Int,
     navController: NavController,
-    currentUser: String
+    currentUser: String,
+    hiddenReviewIds: MutableList<Int> // ← 추가
 ) {
     val context = LocalContext.current
     val reviews = remember { JsonLoader.loadReviewsFromAssets(context) }
     val review = reviews.find { it.id == reviewId }
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     var showMenu by remember { mutableStateOf(false) }
-    var isVisible by remember { mutableStateOf(true) }
 
     if (review == null) {
         Scaffold(
@@ -57,27 +57,23 @@ fun ReviewDetailScreen(
                 )
             }
         ) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(20.dp)
-            ) {
+            Column(modifier = Modifier.padding(innerPadding).padding(20.dp)) {
                 Text("해당 리뷰를 찾을 수 없습니다.")
             }
         }
         return
     }
 
+    fun hideReview(reviewId: Int) {
+        if (!hiddenReviewIds.contains(reviewId)) {
+            hiddenReviewIds.add(reviewId)
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text(
-                        text = "등산 기록",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
+                title = { Text("등산 기록", fontSize = 20.sp, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { backDispatcher?.onBackPressed() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "뒤로가기")
@@ -114,9 +110,8 @@ fun ReviewDetailScreen(
                                     text = { Text("신고") },
                                     onClick = {
                                         showMenu = false
-                                        isVisible = false //숨김
-                                        Toast.makeText(context, "리뷰가 신고되었습니다.", Toast.LENGTH_SHORT)
-                                            .show()
+                                        hideReview(review.id) // 숨기기 수행
+                                        Toast.makeText(context, "리뷰가 신고되었습니다.", Toast.LENGTH_SHORT).show()
                                         navController.popBackStack()
                                     }
                                 )
@@ -124,12 +119,8 @@ fun ReviewDetailScreen(
                                     text = { Text("차단") },
                                     onClick = {
                                         showMenu = false
-                                        isVisible = false  // 숨김
-                                        Toast.makeText(
-                                            context,
-                                            "${review.author} 님이 차단되었습니다.",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        hideReview(review.id)
+                                        Toast.makeText(context, "${review.author} 님이 차단되었습니다.", Toast.LENGTH_SHORT).show()
                                         navController.popBackStack()
                                     }
                                 )
@@ -137,48 +128,36 @@ fun ReviewDetailScreen(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFF7F7F7)
-                )
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF7F7F7))
             )
         },
         containerColor = Color(0xFFF7F7F7)
     ) { innerPadding ->
-        if (isVisible) {
-            Column(
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(20.dp)
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
+                .background(Color(0xFFF7F7F7))
+        ) {
+            AsyncImage(
+                model = "file://${File(context.filesDir, "reviews/${review.imagePath}")}",
+                contentDescription = null,
                 modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(20.dp)
-                    .verticalScroll(rememberScrollState())
-                    .fillMaxSize()
-                    .background(Color(0xFFF7F7F7))
-            ) {
-                AsyncImage(
-                    model = "file://${File(context.filesDir, "reviews/${review.imagePath}")}",
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 200.dp),
-                    contentScale = ContentScale.Fit
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(text = review.author, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Text(text = review.text, style = MaterialTheme.typography.bodyLarge)
-            }
-        } else {
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("이 리뷰는 더 이상 표시되지 않습니다.", color = Color.Black)
-            }
+                    .fillMaxWidth()
+                    .heightIn(min = 200.dp),
+                contentScale = ContentScale.Fit
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = review.author, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text(text = review.text, style = MaterialTheme.typography.bodyLarge)
         }
     }
-
 }
+
+
+
 
 fun deleteReview(context: Context, review: Review) {
     // 1. 기존 리뷰 목록 불러오기

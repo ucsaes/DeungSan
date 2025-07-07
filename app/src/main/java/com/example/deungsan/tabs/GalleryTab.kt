@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -17,13 +18,14 @@ import com.example.deungsan.components.ReviewGallery
 import com.example.deungsan.data.loader.JsonLoader
 
 @Composable
-fun GalleryTab(context: Context, navController: NavController) {
+fun GalleryTab(context: Context, navController: NavController, hiddenReviewIds: List<Int>) {
     val reviews = remember {JsonLoader.loadReviewsFromAssets(context) }
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        ReviewGallery(reviews, navController)
+
+        ReviewGallery(reviews, navController, hiddenReviewIds)
         AddReviewButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)

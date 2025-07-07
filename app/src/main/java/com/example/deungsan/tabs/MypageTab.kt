@@ -35,6 +35,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -149,5 +150,5 @@ fun MyReviewPage(navController: NavController) {
 
     val myReviews = reviews.filter { it.author == currentUser }  // 내 리뷰만 필터링
 
-    ReviewGallery(myReviews, navController)
+    ReviewGallery(myReviews, navController, hiddenReviewIds = emptyList())
 }
