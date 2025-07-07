@@ -1,47 +1,68 @@
+package com.example.deungsan.components
+
+
 import android.content.Context
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import com.google.accompanist.pager.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.material3.AlertDialogDefaults.containerColor
+import androidx.compose.material3.ListItemDefaults.contentColor
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.example.deungsan.components.saveReviewsToFile
 import com.example.deungsan.data.loader.JsonLoader
+import com.example.deungsan.data.model.Review
+import com.google.gson.Gson
 import java.io.File
 
 @Composable
-fun EditReviewScreen(
-    reviewId: Int,
-    onReviewUpdated: () -> Unit
+fun AddReviewButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
-    val context = LocalContext.current
-    val reviews = remember { JsonLoader.loadReviewsFromAssets(context).toMutableList() }
-    val review = reviews.find { it.id == reviewId }
+    FloatingActionButton(
+        onClick = onClick,
+        modifier = modifier,
+        containerColor = Color(0xFFA7D5A9),     // 연녹색
+        shape = RoundedCornerShape(25.dp),
+        contentColor = Color.White,      // 흰색 아이콘,
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Add,
+            contentDescription = "Add Review"
+        )
+    }
+}
 
-    var author by remember { mutableStateOf(review?.author ?: "") }
-    var text by remember { mutableStateOf(review?.text ?: "") }
+@Composable
+fun AddReviewScreen(onReviewAdded: () -> Unit) {
+    val context = LocalContext.current
+    var author by remember { mutableStateOf("") }
+    var text by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         imageUri = uri
-    }
-
-    if (review == null) {
-        Text("리뷰를 찾을 수 없습니다.")
-        return
     }
 
     Column(modifier = Modifier.padding(16.dp)) {
@@ -77,25 +98,10 @@ fun EditReviewScreen(
         ) {
             Text("이미지 선택")
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // 미리보기
-        if (imageUri != null) {
+        imageUri?.let {
+            Spacer(modifier = Modifier.height(8.dp))
             Image(
-                painter = rememberAsyncImagePainter(imageUri),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            Image(
-                painter = rememberAsyncImagePainter(
-                    model = "file://${File(context.filesDir, "reviews/${review.imagePath}")}"
-                ),
+                painter = rememberAsyncImagePainter(it),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -109,32 +115,44 @@ fun EditReviewScreen(
 
         Button(
             onClick = {
-                val newImagePath = imageUri?.let { uri ->
-                    val newFileName = "${review.id}.jpeg"
+                val reviews = JsonLoader.loadReviewsFromAssets(context).toMutableList()
+                val newId = (reviews.maxByOrNull { it.id }?.id ?: 0) + 1
+                val fileName = "$newId.jpeg"
+
+                // 이미지 파일 저장
+                imageUri?.let { uri ->
                     val inputStream = context.contentResolver.openInputStream(uri)
-                    val file = File(context.filesDir, "reviews/$newFileName")
+                    val file = File(context.filesDir, "reviews/$fileName")
                     file.parentFile?.mkdirs()
                     val outputStream = file.outputStream()
                     inputStream?.copyTo(outputStream)
                     inputStream?.close()
                     outputStream.close()
-                    newFileName
-                } ?: review.imagePath
-
-                val updatedReviews = reviews.map {
-                    if (it.id == review.id) {
-                        it.copy(author = author, text = text, imagePath = newImagePath)
-                    } else {
-                        it
-                    }
                 }
 
-                saveReviewsToFile(context, updatedReviews)
-                onReviewUpdated()
+                // 리뷰 추가
+                val newReview = Review(
+                    id = newId,
+                    author = author,
+                    text = text,
+                    imagePath = fileName
+                )
+                reviews.add(newReview)
+
+                // JSON 저장
+                saveReviewsToFile(context, reviews)
+
+                onReviewAdded()
             },
-            enabled = author.isNotBlank() && text.isNotBlank()
+            enabled = author.isNotBlank() && text.isNotBlank() && imageUri != null
         ) {
-            Text("수정 완료")
+            Text("등록")
         }
     }
+}
+
+fun saveReviewsToFile(context: Context, reviews: List<Review>) {
+    val json = Gson().toJson(reviews)
+    val file = File(context.filesDir, "reviews.json")
+    file.writeText(json)
 }
