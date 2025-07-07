@@ -66,7 +66,7 @@ fun ReviewGallery(
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(2.dp),
+        contentPadding = PaddingValues(10.dp),
         verticalItemSpacing = 4.dp,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
@@ -92,7 +92,7 @@ fun ReviewItem(review: Review, navController: NavController) {
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.3f))
     ) {
-        Column(modifier = Modifier.padding(10.dp)) {
+        Column(modifier = Modifier.padding(.dp)) {
 
             // 작성자 이름 + 산 이름 한 줄에 양끝 배치
             Row(
@@ -108,8 +108,8 @@ fun ReviewItem(review: Review, navController: NavController) {
 
                 Box(
                     modifier = Modifier
-                        .background(Color.LightGray, RoundedCornerShape(6.dp))
-                        .padding(horizontal = 7.dp, vertical = 1.dp)
+                        .background(Color.LightGray, RoundedCornerShape(8.dp))
+                        .padding(horizontal = 5.dp, vertical = (0.5).dp)
                 ) {
                     Text(
                         text = review.mountain,
@@ -127,7 +127,9 @@ fun ReviewItem(review: Review, navController: NavController) {
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight(),
+                    .wrapContentHeight()
+
+                    ,
                 contentScale = ContentScale.Fit
             )
 
