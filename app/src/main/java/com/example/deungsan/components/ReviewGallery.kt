@@ -92,13 +92,13 @@ fun ReviewItem(review: Review, navController: NavController) {
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.3f))
     ) {
-        Column(modifier = Modifier.padding(10.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
 
             // 작성자 이름 + 산 이름 한 줄에 양끝 배치
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 3.dp, vertical = 2.dp),
+                    .padding(horizontal = 3.dp, vertical = 5.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -114,7 +114,7 @@ fun ReviewItem(review: Review, navController: NavController) {
                     Text(
                         text = review.mountain,
                         fontSize = 12.sp,
-                        color = Color.White
+                        color = Color.White,
                     )
                 }
             }
@@ -139,13 +139,6 @@ fun ReviewItem(review: Review, navController: NavController) {
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 3.dp, vertical = 2.dp)
-            )
-
-            Text(
-                text = "(더보기)",
-                color = Color.Gray,
-                fontSize = 14.sp,
                 modifier = Modifier.padding(horizontal = 3.dp, vertical = 2.dp)
             )
         }

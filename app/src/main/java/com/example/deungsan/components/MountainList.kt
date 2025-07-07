@@ -79,7 +79,7 @@ fun MountainList(viewModel: MountainViewModel = viewModel(), mountains: List<Mou
         if (onlyFav && favorites.isEmpty()) {
             item {
                 Text(
-                    text = "좋아하는 산을 만들어보세요!",
+                    text = "가고 싶은 산을 저장해보세요!",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
