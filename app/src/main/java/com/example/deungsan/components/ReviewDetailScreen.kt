@@ -97,6 +97,7 @@ fun ReviewDetailScreen(
                             Icon(Icons.Default.MoreVert, contentDescription = "More")
                         }
 
+                        //상단 메뉴 설정
                         DropdownMenu(
                             expanded = showMenu,
                             onDismissRequest = { showMenu = false }
@@ -152,6 +153,7 @@ fun ReviewDetailScreen(
                 .fillMaxSize()
                 .background(Color(0xFFF7F7F7))
         ) {
+            Text(text = review.author, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             AsyncImage(
                 model = "file://${File(context.filesDir, "reviews/${review.imagePath}")}",
                 contentDescription = null,
@@ -161,7 +163,7 @@ fun ReviewDetailScreen(
                 contentScale = ContentScale.Fit
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = review.author, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text(text = review.mountain, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             Text(text = review.text, style = MaterialTheme.typography.bodyLarge)
         }
     }

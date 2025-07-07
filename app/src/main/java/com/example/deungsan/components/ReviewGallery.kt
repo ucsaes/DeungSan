@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
@@ -65,7 +66,7 @@ fun ReviewGallery(
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(4.dp),
+        contentPadding = PaddingValues(2.dp),
         verticalItemSpacing = 4.dp,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
@@ -75,54 +76,80 @@ fun ReviewGallery(
     }
 }
 
-
 @Composable
 fun ReviewItem(review: Review, navController: NavController) {
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 2.dp, vertical = 3.dp)
+            .padding(horizontal = 4.dp, vertical = 6.dp)
             .wrapContentHeight()
             .clickable {
                 navController.navigate("reviewDetail/${review.id}")
-            }
-            .clip(RoundedCornerShape(16.dp)),
+            },
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.3f))
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            val context = LocalContext.current
+        Column(modifier = Modifier.padding(10.dp)) {
 
+            // 작성자 이름 + 산 이름 한 줄에 양끝 배치
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 3.dp, vertical = 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = review.author,
+                    fontSize = 15.sp)
+
+                Box(
+                    modifier = Modifier
+                        .background(Color.LightGray, RoundedCornerShape(6.dp))
+                        .padding(horizontal = 7.dp, vertical = 1.dp)
+                ) {
+                    Text(
+                        text = review.mountain,
+                        fontSize = 12.sp,
+                        color = Color.White
+                    )
+                }
+            }
+
+
+
+            // 사진: Rounded 제거, 가로 꽉 차게
             AsyncImage(
                 model = "file://${File(context.filesDir, "reviews/${review.imagePath}")}",
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .wrapContentHeight(), // 자동 높이
-                contentScale = ContentScale.Fit // 비율 유지
+                    .wrapContentHeight(),
+                contentScale = ContentScale.Fit
             )
+
             Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = review.author,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold)
 
             // 리뷰 미리보기 텍스트
             Text(
                 text = review.text,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(horizontal = 3.dp, vertical = 2.dp)
             )
+
             Text(
                 text = "(더보기)",
                 color = Color.Gray,
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                modifier = Modifier.padding(horizontal = 3.dp, vertical = 2.dp)
             )
-
         }
     }
-    }
+}
+
 

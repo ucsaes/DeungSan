@@ -67,6 +67,7 @@ fun AddReviewScreen(
     val context = LocalContext.current
     var text by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var mountain by remember { mutableStateOf("") }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -87,7 +88,8 @@ fun AddReviewScreen(
                     containerColor = Color(0xFFF7F7F7)
                 ),
                 actions = {
-                    val isEnabled = text.isNotBlank() && imageUri != null
+                    val isEnabled = text.isNotBlank() && imageUri != null && mountain.isNotBlank()
+
                     TextButton(
                         onClick = {
                             val reviews = JsonLoader.loadReviewsFromAssets(context).toMutableList()
@@ -107,6 +109,7 @@ fun AddReviewScreen(
                             val newReview = Review(
                                 id = newId,
                                 author = currentUser,
+                                mountain= mountain,
                                 text = text,
                                 imagePath = fileName
                             )
@@ -153,6 +156,27 @@ fun AddReviewScreen(
             }
 
             Spacer(Modifier.height(24.dp))
+
+
+            // 산 이름 입력
+            OutlinedTextField(
+                value = mountain,
+                onValueChange = { mountain = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("산 이름을 적어주세요") },
+                colors = TextFieldDefaults.colors(
+                    cursorColor = GreenPrimaryDark,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent
+                )
+            )
+
+            Spacer(Modifier.height(16.dp))
+
 
             // 내용 입력
             OutlinedTextField(
