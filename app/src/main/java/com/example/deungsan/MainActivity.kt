@@ -49,9 +49,13 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.internal.composableLambda
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import com.example.deungsan.components.AddReviewScreen
 import com.example.deungsan.components.ReviewDetailScreen
+import com.example.deungsan.data.loader.JsonLoader
+import com.example.deungsan.tabs.BlockedReviewTab
+import com.example.deungsan.tabs.HiddenReviewGallery
 import com.example.deungsan.tabs.MyFavPage
 import com.example.deungsan.tabs.MyReviewPage
 
@@ -168,7 +172,7 @@ class MainActivity : ComponentActivity() {
                         ) { page ->
                             when (page) {
                                 0 -> ListTab(context, navController)
-                                1 -> GalleryTab(context, navController, hiddenReviewIds )
+                                1 -> GalleryTab(context, navController, hiddenReviewIds)
                                 2 -> MyPageTab(context, navController)
                             }
                         }
@@ -220,7 +224,7 @@ class MainActivity : ComponentActivity() {
                             navController = navController,     // 여기에서 navController 전달
                             currentUser = LocalCurrentUser.current,        // 현재 사용자 이름 전달
                             hiddenReviewIds = hiddenReviewIds
-                            )
+                        )
                     }
                 }
 
@@ -332,10 +336,33 @@ class MainActivity : ComponentActivity() {
                 ) {
                     MyReviewPage(navController)
                 }
+
+                composable(
+                    route = "viewBlocked",
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popEnterTransition = {
+                        slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                    }
+                ) {
+                    BlockedReviewTab(
+                            navController = navController,
+                            hiddenReviewIds = hiddenReviewIds
+                        )
+
+
+
+                }
+
+
             }
-
-
-
         }
     }
 }

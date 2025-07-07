@@ -19,6 +19,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,6 +32,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.RateReview
 import androidx.compose.material.icons.outlined.Reviews
@@ -72,6 +75,8 @@ import com.example.deungsan.LocalCurrentUser
 import com.example.deungsan.ui.theme.GreenPrimaryDark
 import java.nio.file.WatchEvent
 import com.example.deungsan.R
+import com.example.deungsan.components.ReviewItem
+import com.example.deungsan.data.model.Review
 import java.io.FileOutputStream
 import kotlin.math.exp
 
@@ -242,6 +247,25 @@ fun MyPageTab(context: Context, navController: NavController) {
                 Text("내 리뷰")
             }
         }
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 3.dp)
+                .clickable { navController.navigate("viewBlocked") },  // 목적에 맞는 route
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            shape = RoundedCornerShape(30.dp),
+            border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.3f)),
+        ) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(Icons.Outlined.Block, contentDescription = "신고/차단된 리뷰")
+                Spacer(Modifier.width(12.dp))
+                Text("신고/차단된 리뷰")
+            }
+        }
     }
 }
 
@@ -382,5 +406,51 @@ fun deleteProfileImage(context: Context, fileName: String = "user_profile.jpg"):
         file.delete()
     } else {
         false
+    }
+}
+
+@Composable
+fun HiddenReviewGallery(
+    reviews: List<Review>,
+    navController: NavController,
+    hiddenReviewIds: List<Int>
+) {
+    val hiddenReviews = remember(reviews, hiddenReviewIds) {
+        reviews.filter { it.id in hiddenReviewIds }
+    }
+
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Fixed(2),
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(4.dp),
+        verticalItemSpacing = 4.dp,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        items(hiddenReviews.size) { index ->
+            ReviewItem(hiddenReviews[index], navController)
+        }
+    }
+}
+
+@Composable
+fun BlockedReviewTab(
+    navController: NavController,
+    hiddenReviewIds: List<Int>
+) {
+    val context = LocalContext.current
+    val reviews = remember(hiddenReviewIds) {
+        JsonLoader.loadReviewsFromAssets(context)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 20.dp)
+    ) {
+        HiddenReviewGallery(
+            reviews = reviews,
+            navController = navController,
+            hiddenReviewIds = hiddenReviewIds
+        )
     }
 }
