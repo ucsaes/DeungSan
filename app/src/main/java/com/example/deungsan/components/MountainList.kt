@@ -50,16 +50,10 @@ fun MountainList(viewModel: MountainViewModel = viewModel(), mountains: List<Mou
 
 
     val gradientHeight = 400.dp
-    val backgroundBrush = Brush.verticalGradient(
-        colors = listOf(Color.White, Color(0xFFF7F7F7), Color(0xFFF7F7F7)),
-        startY = 0f,
-        endY = with(LocalDensity.current) { gradientHeight.toPx() }
-    )
 
 
     LazyColumn(
         modifier = Modifier.fillMaxSize()
-            .background(brush = backgroundBrush)
     ) {
         items(mountains) { mountain ->
             if (!onlyFav || (mountain.name in favorites)) {
@@ -73,6 +67,17 @@ fun MountainList(viewModel: MountainViewModel = viewModel(), mountains: List<Mou
                             mountain.name
                         )
                     }
+                )
+            }
+        }
+        if (onlyFav && favorites.isEmpty()) {
+            item {
+                Text(
+                    text = "좋아하는 산을 만들어보세요!",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    color = Color.Gray
                 )
             }
         }
