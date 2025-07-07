@@ -47,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -64,7 +65,8 @@ import com.example.deungsan.R
 
 @Composable
 fun MyPageTab(context: Context, navController: NavController) {
-    val image_source = R.drawable.default_profile
+    val profileFile = File(context.filesDir, "user_profile")
+    val imageSource: Any = if (profileFile.exists()) profileFile else R.drawable.default_profile
 
     Column (
         modifier = Modifier.fillMaxSize(),
@@ -83,16 +85,16 @@ fun MyPageTab(context: Context, navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AsyncImage(
-                    model = image_source,
+                    model = imageSource,
                     contentDescription = "프로필 이미지",
                     modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .border(2.dp, Color.LightGray, CircleShape),
+                        .size(80.dp)
+                        .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
                 Spacer(Modifier.width(12.dp))
-                Text(text="즐겨찾는 산", color=Color.White)
+                Text(text="김등산", color=Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                Text(text="님, 반갑습니다!", color=Color.White, fontSize = 20.sp)
             }
         }
 

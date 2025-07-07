@@ -24,7 +24,6 @@ fun GalleryTab(context: Context, navController: NavController, hiddenReviewIds: 
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-
         ReviewGallery(reviews, navController, hiddenReviewIds)
         AddReviewButton(
             modifier = Modifier
