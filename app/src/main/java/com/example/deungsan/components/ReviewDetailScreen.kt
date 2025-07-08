@@ -147,7 +147,6 @@ fun ReviewDetailScreen(
                 .padding(0.dp)
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize()
-                .background(Color(0xFFF7F7F7))
         ) {
             Row(
                 modifier = Modifier
