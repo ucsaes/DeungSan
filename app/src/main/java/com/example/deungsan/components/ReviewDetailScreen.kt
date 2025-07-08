@@ -108,6 +108,7 @@ fun ReviewDetailScreen(
                         .fillMaxWidth()
                         .height(50.dp) // 원하는 두께로 조절
                         .background(Color(0xFFF7F7F7))
+                        .statusBarsPadding()
                 ) {
                     IconButton(
                         onClick = { backDispatcher?.onBackPressed() },
