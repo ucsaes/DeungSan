@@ -360,6 +360,39 @@ class MainActivity : ComponentActivity() {
 
                 }
 
+                //탭3&1
+                composable(
+                    route = "mountain_detail/{mountainName}",
+                    arguments = listOf(navArgument("mountainName") { type = NavType.StringType }),
+                    enterTransition = {
+                        slideInVertically(
+                            initialOffsetY = { it },
+                            animationSpec = tween(300)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutVertically(
+                            targetOffsetY = { -it },
+                            animationSpec = tween(300)
+                        )
+                    },
+                    popEnterTransition = {
+                        slideInVertically(
+                            initialOffsetY = { -it },
+                            animationSpec = tween(300)
+                        )
+                    },
+                    popExitTransition = {
+                        slideOutVertically(
+                            targetOffsetY = { it },
+                            animationSpec = tween(300)
+                        )
+                    }
+                ) { backStackEntry ->
+                    val mountainName = backStackEntry.arguments?.getString("mountainName") ?: ""
+                    MountainDetailScreen(mountainName)
+                }
+
 
             }
         }
