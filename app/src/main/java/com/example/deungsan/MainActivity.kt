@@ -81,7 +81,7 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalPagerApi::class, ExperimentalAnimationApi::class)
     @Composable
     fun TabWithSwipe(context: Context) {
-        val items = listOf("명산", "소통창구", "마이페이지")
+        val items = listOf("산", "커뮤니티", "마이페이지")
         val filledIcons = listOf(
             Icons.Filled.Terrain,
             Icons.Filled.Article,

@@ -82,6 +82,7 @@ import com.example.deungsan.data.model.Review
 import java.io.FileOutputStream
 import kotlin.math.exp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.deungsan.ui.theme.myBlack
 
 @Composable
 fun MyPageTab(context: Context, navController: NavController) {
@@ -212,9 +213,9 @@ fun MyPageTab(context: Context, navController: NavController) {
                 modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Outlined.FavoriteBorder, contentDescription = null)
+                Icon(Icons.Outlined.FavoriteBorder,tint = myBlack, contentDescription = null)
                 Spacer(Modifier.width(12.dp))
-                Text("가고 싶은 산")
+                Text("가고 싶은 산", color = myBlack)
             }
         }
 
@@ -231,9 +232,9 @@ fun MyPageTab(context: Context, navController: NavController) {
                 modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Outlined.RateReview, contentDescription = null)
+                Icon(Icons.Outlined.RateReview, tint = myBlack, contentDescription = null)
                 Spacer(Modifier.width(12.dp))
-                Text("내 리뷰")
+                Text("내 리뷰", color = myBlack)
             }
         }
 
@@ -250,9 +251,9 @@ fun MyPageTab(context: Context, navController: NavController) {
                 modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Outlined.Block, contentDescription = "신고된 리뷰")
+                Icon(Icons.Outlined.Block, tint = myBlack, contentDescription = "신고된 리뷰")
                 Spacer(Modifier.width(12.dp))
-                Text("신고된 리뷰")
+                Text("신고된 리뷰", color = myBlack, fontSize = 16.sp)
             }
         }
     }
@@ -452,6 +453,7 @@ fun BlockedReviewTab(
             items(hiddenReviews.size) { index ->
                 ReviewItem(hiddenReviews[index], navController)
             }
+
         }
     }
 }

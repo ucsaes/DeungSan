@@ -38,6 +38,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.style.TextAlign
+import com.example.deungsan.ui.theme.myBlack
 import java.io.File
 
 inline fun <T> List<T>.partitionIndexed(predicate: (Int, T) -> Boolean): Pair<List<T>, List<T>> {
@@ -74,6 +76,16 @@ fun ReviewGallery(
             ReviewItem(visibleReviews[index], navController)
         }
     }
+    if (reviews.isEmpty()){
+        Text(
+            text = "커뮤니티 탭에서 리뷰를 작성해보세요!",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            color = Color.Gray,
+            textAlign = TextAlign.Center
+        )
+    }
 }
 
 @Composable
@@ -83,7 +95,7 @@ fun ReviewItem(review: Review, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 4.dp, vertical = 6.dp)
+            .padding(horizontal = 3.dp, vertical = 4.dp)
             .wrapContentHeight()
             .clickable {
                 navController.navigate("reviewDetail/${review.id}")
@@ -92,7 +104,7 @@ fun ReviewItem(review: Review, navController: NavController) {
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.3f))
     ) {
-        Column(modifier = Modifier.padding(10.dp)) {
+        Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 15.dp)) {
 
             // 작성자 이름 + 산 이름 한 줄에 양끝 배치
             Row(
@@ -104,17 +116,19 @@ fun ReviewItem(review: Review, navController: NavController) {
             ) {
                 Text(
                     text = review.author,
-                    fontSize = 15.sp)
+                    color = myBlack,
+                    fontSize = 14.sp)
 
                 Box(
                     modifier = Modifier
-                        .background(Color.LightGray, RoundedCornerShape(8.dp))
+                        .background(Color.LightGray.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
                         .padding(horizontal = 5.dp, vertical = (0.5).dp)
                 ) {
                     Text(
                         text = review.mountain,
                         fontSize = 12.sp,
-                        color = Color.White
+                        lineHeight = 20.sp,
+                        color = myBlack
                     )
                 }
             }
@@ -128,27 +142,30 @@ fun ReviewItem(review: Review, navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-
-                    ,
+                    .clip(RoundedCornerShape(3.dp)),
                 contentScale = ContentScale.Fit
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // 리뷰 미리보기 텍스트
             Text(
                 text = review.text,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 3.dp, vertical = 2.dp)
+                fontSize = 12.sp,
+                lineHeight = 14.sp,
+                color = myBlack,
+                modifier = Modifier.padding(horizontal = 3.dp, vertical = 0.dp)
             )
+            Spacer(modifier = Modifier.height(2.dp))
 
             Text(
-                text = "(더보기)",
+                text = "더보기",
                 color = Color.Gray,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(horizontal = 3.dp, vertical = 2.dp)
+                fontSize = 12.sp,
+                lineHeight = 15.sp,
+                modifier = Modifier.padding(horizontal = 3.dp, vertical = 0.dp)
             )
         }
     }
