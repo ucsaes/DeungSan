@@ -74,18 +74,16 @@ fun MountainDetailScreen(mountainName: String) {
                     containerColor = Color(0xFFF7F7F7)
             )
             )
-        }
+        },
+        containerColor = Color(0xFFF7F7F7)
     ) { innerPadding ->
-        Box( modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize()
-            .background(Color(0xFFF7F7F7)))
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(20.dp)
+                .padding(top = 0.dp, bottom = 0.dp, start = 15.dp, end =15.dp)
                 .verticalScroll(rememberScrollState())
-
+                .fillMaxSize()
+                .background(Color(0xFFF7F7F7))
         ) {
             // 이미지
             AsyncImage(
@@ -101,21 +99,21 @@ fun MountainDetailScreen(mountainName: String) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Column {
-                Text("📍 위치", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = myBlack)
+                Text("위치", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = myBlack)
                 Text(mountain.location, fontSize = 14.sp, color = myBlack)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Column {
-                Text("🗻 고도", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = myBlack)
+                Text("고도", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = myBlack)
                 Text("${mountain.height}m", fontSize = 14.sp, color = myBlack)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Column {
-                Text("📝 설명", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = myBlack)
+                Text("설명", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = myBlack)
                 Text(mountain.text, fontSize = 14.sp, color = myBlack)
             }
         }

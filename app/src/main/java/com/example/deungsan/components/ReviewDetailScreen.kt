@@ -11,7 +11,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -82,7 +87,7 @@ fun ReviewDetailScreen(
                     title = { Text("리뷰 없음") },
                     navigationIcon = {
                         IconButton(onClick = { backDispatcher?.onBackPressed() }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "뒤로가기")
+                            Icon(Icons.Default.ArrowBackIosNew, contentDescription = "뒤로가기")
                         }
                     }
                 )
@@ -97,20 +102,110 @@ fun ReviewDetailScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("등산 기록", fontSize = 20.sp, color = myBlack) },
-                navigationIcon = {
-                    IconButton(onClick = { backDispatcher?.onBackPressed() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "뒤로가기", tint = myBlack)
+            Column {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp) // 원하는 두께로 조절
+                        .background(Color(0xFFF7F7F7))
+                ) {
+                    IconButton(
+                        onClick = { backDispatcher?.onBackPressed() },
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(start = 0.dp)
+                            .size(40.dp)  // 아이콘 버튼도 작게
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBackIos,
+                            contentDescription = "뒤로가기",
+                            tint = myBlack,
+                            modifier = Modifier.size(20.dp)
+                        )
                     }
-                },
-                actions = {
-                    Box {
-                        IconButton(onClick = { showMenu = true }) {
-                            Icon(Icons.Default.MoreVert, contentDescription = "More", tint = myBlack)
-                        }
+                    Text(
+                        text = "등산 기록",
+                        fontSize = 16.sp,
+                        color = myBlack,
+                        modifier = Modifier.align(Alignment.Center),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Divider(
+                    color = Color.LightGray.copy(alpha = 0.2f),
+                    thickness = 0.5.dp,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        containerColor = Color(0xFFF7F7F7)
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(0.dp)
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
+                .background(Color(0xFFF7F7F7))
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween // 양 끝으로 배치
+            ) {
+                Text(
+                    text = review.author,
+                    color = myBlack,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
 
-                        //상단 메뉴 설정
+                Spacer(modifier = Modifier.weight(1f)) // 왼쪽과 오른쪽 컴포넌트 사이 공간 차지
+
+                Row (verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .clickable { navController.navigate("detail/${review.mountain}") }
+                            .background(
+                                Color.LightGray.copy(alpha = 0.3f),
+                                RoundedCornerShape(9.dp)
+                            )
+                            .padding(horizontal = 7.dp, vertical = 2.5.dp)
+                    ) {
+                        Text(
+                            text = "${review.mountain} >",
+                            fontSize = 14.sp,
+                            lineHeight = 22.sp,
+                            color = myBlack,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier.padding(
+                            start = 0.dp,
+                            end = 0.dp,
+                            top = 0.dp,
+                            bottom = 0.dp
+                        )
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp) // 터치 영역 확보 (원하면 40~48.dp로)
+                                .clickable { showMenu = true }
+                                .padding(start=5.dp,end=0.dp,top=0.dp,bottom=0.dp) // 실제 padding 없음
+                        ) {
+                            Icon(
+                                Icons.Default.MoreHoriz,
+                                contentDescription = "More",
+                                tint = myBlack,
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .align(Alignment.Center)
+                            )
+                        }
                         DropdownMenu(
                             expanded = showMenu,
                             onDismissRequest = { showMenu = false },
@@ -135,16 +230,32 @@ fun ReviewDetailScreen(
                                 )
                             } else {
                                 DropdownMenuItem(
-                                    text = { Text(if (hasReported) "신고 취소" else "신고", color = myBlack) },
+                                    text = {
+                                        Text(
+                                            if (hasReported) "신고 취소" else "신고",
+                                            color = myBlack
+                                        )
+                                    },
                                     onClick = {
                                         showMenu = false
                                         if (hasReported) {
-                                            reportViewModel.removeReport(context, review.id.toString())
-                                            Toast.makeText(context, "신고가 취소되었습니다.", Toast.LENGTH_SHORT).show()
+                                            reportViewModel.removeReport(
+                                                context,
+                                                review.id.toString()
+                                            )
+                                            Toast.makeText(
+                                                context,
+                                                "신고가 취소되었습니다.",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                             navController.popBackStack()
                                         } else {
                                             reportViewModel.addReport(context, review.id.toString())
-                                            Toast.makeText(context, "리뷰가 신고되었습니다.", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(
+                                                context,
+                                                "리뷰가 신고되었습니다.",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                             triggerReportDelay = true
                                             navController.popBackStack()
                                         }
@@ -153,56 +264,23 @@ fun ReviewDetailScreen(
                             }
                         }
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF7F7F7))
-            )
-        },
-        containerColor = Color(0xFFF7F7F7)
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(top = 0.dp, bottom = 0.dp, start = 15.dp, end =15.dp)
-                .verticalScroll(rememberScrollState())
-                .fillMaxSize()
-                .background(Color(0xFFF7F7F7))
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 3.dp, end = 3.dp, top = 2.dp, bottom = 7.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = review.author,
-                    color = myBlack,
-                    fontSize = 16.sp)
-
-                Box(
-                    modifier = Modifier
-                        .clickable(onClick = {navController.navigate("detail/${review.mountain}")})
-                        .background(Color.LightGray.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
-                        .padding(horizontal = 7.dp, vertical = (2.5).dp)
-                ) {
-                    Text(
-                        text = "${review.mountain} >",
-                        fontSize = 14.sp,
-                        lineHeight = 22.sp,
-                        color = myBlack
-                    )
                 }
             }
             AsyncImage(
                 model = "file://${File(context.filesDir, "reviews/${review.imagePath}")}",
                 contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp)),
+                    .fillMaxWidth(),
                 contentScale = ContentScale.FillWidth
             )
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(text = review.text, style = MaterialTheme.typography.bodyLarge, color = myBlack, fontSize = 14.sp)
+            Spacer(modifier = Modifier.height(0.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp, end = 15.dp, top = 8.dp, bottom = 10.dp)
+            ) {
+                Text(text = review.text, color = myBlack, fontSize = 14.sp)
+            }
         }
     }
 }

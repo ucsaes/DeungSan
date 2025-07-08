@@ -61,9 +61,11 @@ fun ReviewGallery(
     navController: NavController,
     hiddenReviewIds: List<Int> // ← 추가
 ) {
+
     val visibleReviews = remember(reviews, hiddenReviewIds) {
         reviews.filterNot { it.id in hiddenReviewIds }
     }
+    val shuffledReviews = visibleReviews.shuffled()
 
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
@@ -73,7 +75,7 @@ fun ReviewGallery(
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         items(visibleReviews.size) { index ->
-            ReviewItem(visibleReviews[index], navController)
+            ReviewItem(shuffledReviews[index], navController)
         }
     }
     if (reviews.isEmpty()){
