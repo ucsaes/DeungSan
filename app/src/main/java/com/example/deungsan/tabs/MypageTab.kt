@@ -1,6 +1,7 @@
 package com.example.deungsan.tabs
 
 
+import GoogleMapView
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -115,7 +116,8 @@ fun MyPageTab(context: Context, navController: NavController) {
 
 
     Column (
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .verticalScroll(rememberScrollState())  // <-- 전체 스크롤 가능하게,
     ) {
         Spacer(modifier = Modifier.height(8.dp))
         Card(
@@ -255,7 +257,19 @@ fun MyPageTab(context: Context, navController: NavController) {
                 Text("신고된 리뷰")
             }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "📍 내 위치 기반 지도",
+            modifier = Modifier.padding(start = 16.dp, bottom = 4.dp),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        GoogleMapView(context = context)
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
