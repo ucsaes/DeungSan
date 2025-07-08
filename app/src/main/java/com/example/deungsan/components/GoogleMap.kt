@@ -11,59 +11,119 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.google.android.gms.maps.GoogleMapOptions
 import android.content.Context
+import android.net.Uri
+import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.lifecycle.*
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.navigation.NavController
+import com.example.deungsan.R
+import com.example.deungsan.data.model.Mountain
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLngBounds
 
 @SuppressLint("MissingPermission")
 @Composable
-fun GoogleMapView(context: Context) {
+fun GoogleMapView(context: Context,
+                  mountains: List<Mountain>,
+                  favorites: Set<String>,
+                  navController: NavController
+) {
     val mapView = rememberMapViewWithLifecycle(context)
 
     AndroidView(factory = {
+
         mapView.apply {
             getMapAsync { googleMap ->
-                val seoul = LatLng(37.5665, 126.9780) // 서울 위치
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 10f))
-                googleMap.addMarker(MarkerOptions().position(seoul).title("서울"))
+                // 전체 산 보이게
+                if (mountains.isNotEmpty()) {
+                    val builder = LatLngBounds.builder()
+                    mountains.forEach { mountain ->
+                        builder.include(LatLng(mountain.latitude, mountain.longitude))
+                    }
+                    val bounds = builder.build()
+                    val padding = 200 // 화면 가장자리 여백 (픽셀)
+                    val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
+                    googleMap.moveCamera(cameraUpdate)
+                }
+
+                for (mountain in mountains) {
+                    googleMap.setOnInfoWindowClickListener { marker ->
+                        val rawTitle = marker.title ?: return@setOnInfoWindowClickListener
+                        val cleanName = rawTitle.removePrefix("🏔️ ").trim()
+                        navController.navigate("mountain_detail/${Uri.encode(cleanName)}")
+                    }
+
+
+                    val position = LatLng(mountain.latitude, mountain.longitude)
+                    val isFavorite = favorites.contains(mountain.id.toString())
+
+                    val markerOptions = MarkerOptions()
+                        .position(position)
+                        .title("🏔️ ${mountain.name}")
+                        .snippet(mountain.location)
+
+                    if (isFavorite) {
+                        // 하트 마커
+                        markerOptions.icon(
+                            //BitmapDescriptorFactory.fromResource(R.drawable.heart_marker)
+                            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
+
+                        )
+                    } else {
+                        // 일반 산 마커
+                        markerOptions.icon(
+                            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
+                        )
+                    }
+
+                    googleMap.addMarker(markerOptions)
+
+                }
             }
+
         }
+
     }, modifier = Modifier
         .fillMaxWidth()
-        .height(250.dp))
+        .height(500.dp))
 }
-
 
 @Composable
 fun rememberMapViewWithLifecycle(context: Context): MapView {
     val mapView = remember {
         MapView(context).apply {
-            id = androidx.compose.ui.R.id.compose_view_saveable_id_tag
-            onCreate(null)// 여기서 호출
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
+            id = View.generateViewId()
         }
     }
 
-    val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner) {
-        val lifecycle = lifecycleOwner.lifecycle
-        val observer = object : LifecycleEventObserver {
-            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                when (event) {
-                    Lifecycle.Event.ON_CREATE -> mapView.onCreate(null)
-                    Lifecycle.Event.ON_START -> mapView.onStart()
-                    Lifecycle.Event.ON_RESUME -> mapView.onResume()
-                    Lifecycle.Event.ON_PAUSE -> mapView.onPause()
-                    Lifecycle.Event.ON_STOP -> mapView.onStop()
-                    Lifecycle.Event.ON_DESTROY -> mapView.onDestroy()
-                    else -> {}
-                }
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    DisposableEffect(lifecycle) {
+        mapView.onCreate(null)
+        mapView.onStart()
+        mapView.onResume()
+
+        val observer = object : DefaultLifecycleObserver {
+            override fun onStart(owner: LifecycleOwner) {
+                mapView.onStart()
+            }
+
+            override fun onResume(owner: LifecycleOwner) {
+                mapView.onResume()
+            }
+
+            override fun onPause(owner: LifecycleOwner) {
+                mapView.onPause()
+            }
+
+            override fun onStop(owner: LifecycleOwner) {
+                mapView.onStop()
+            }
+
+            override fun onDestroy(owner: LifecycleOwner) {
+                mapView.onDestroy()
             }
         }
 
@@ -75,4 +135,3 @@ fun rememberMapViewWithLifecycle(context: Context): MapView {
 
     return mapView
 }
-

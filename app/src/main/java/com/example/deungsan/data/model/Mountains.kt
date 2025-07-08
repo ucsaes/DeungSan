@@ -6,5 +6,7 @@ data class Mountain(
     val height: Int,
     val location: String,
     val imagePath: String,
-    var text: String = ""
+    var text: String = "",
+    val latitude: Double,
+    val longitude: Double
 )

@@ -83,12 +83,21 @@ import com.example.deungsan.data.model.Review
 import java.io.FileOutputStream
 import kotlin.math.exp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.deungsan.data.loader.MountainViewModel
 import com.example.deungsan.ui.theme.myBlack
 
 @Composable
 fun MyPageTab(context: Context, navController: NavController) {
     var expanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val mountains = JsonLoader.loadMountainsFromAssets(context)
+    val viewModel: MountainViewModel = viewModel()
+    val favorites by viewModel.favorites.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadFavorites(context)
+    }
+
     val profileFile = File(context.filesDir, "user_profile.jpg")
     var reloadKey by remember { mutableStateOf(System.currentTimeMillis()) }
 
@@ -268,7 +277,12 @@ fun MyPageTab(context: Context, navController: NavController) {
             fontWeight = FontWeight.Bold
         )
 
-        GoogleMapView(context = context)
+        GoogleMapView(
+            context = context,
+            mountains = mountains,
+            favorites = favorites,
+            navController = navController
+        )
     }
 
 }
