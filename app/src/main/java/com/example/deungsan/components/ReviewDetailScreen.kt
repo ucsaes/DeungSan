@@ -53,11 +53,13 @@ fun ReviewDetailScreen(
     var showMenu by remember { mutableStateOf(false) }
     val reportedIds by reportViewModel.reported.collectAsState() // 신고 목록 관찰
 
+    //신고 id와 비교해 신고 여부를 실시간 확인
     val hasReported by remember(reportedIds, review?.id) {
         derivedStateOf { review?.id.toString() in reportedIds }
 
 
         }
+    //datastore에서 가져옴
     LaunchedEffect(Unit) { reportViewModel.loadReports(context)}
 
 
