@@ -51,6 +51,7 @@ import androidx.compose.runtime.internal.composableLambda
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.navigation.NavController
 import com.example.deungsan.components.AddReviewScreen
 import com.example.deungsan.components.ReviewDetailScreen
 import com.example.deungsan.data.loader.JsonLoader
@@ -196,7 +197,7 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { backStackEntry ->
                     val name = backStackEntry.arguments?.getString("name") ?: ""
-                    MountainDetailScreen(name)
+                    MountainDetailScreen(name, navController)
                 }
 
                 //탭2 상세페이지로 이동
@@ -390,7 +391,7 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { backStackEntry ->
                     val mountainName = backStackEntry.arguments?.getString("mountainName") ?: ""
-                    MountainDetailScreen(mountainName)
+                    MountainDetailScreen(mountainName, navController)
                 }
 
 

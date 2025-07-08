@@ -28,7 +28,7 @@ import com.google.android.gms.maps.model.LatLngBounds
 @Composable
 fun GoogleMapView(context: Context,
                   mountains: List<Mountain>,
-                  favorites: Set<String>,
+                  favorites: Set<String> = emptySet(),
                   navController: NavController
 ) {
     val mapView = rememberMapViewWithLifecycle(context)

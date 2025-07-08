@@ -1,5 +1,6 @@
 package com.example.deungsan.components
 
+import GoogleMapView
 import android.R
 import android.content.Context
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -25,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.deungsan.data.loader.JsonLoader
 import com.example.deungsan.data.model.Mountain
@@ -32,7 +34,7 @@ import com.example.deungsan.ui.theme.myBlack
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MountainDetailScreen(mountainName: String) {
+fun MountainDetailScreen(mountainName: String, navController: NavController) {
     val context: Context = LocalContext.current
     val mountains: List<Mountain> = remember { JsonLoader.loadMountainsFromAssets(context) }
     val mountain = mountains.find { it.name == mountainName }
@@ -187,6 +189,21 @@ fun MountainDetailScreen(mountainName: String) {
                         Text("설명", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = myBlack)
                         Text(mountain.text, fontSize = 14.sp, color = myBlack)
                     }
+                }
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 0.dp, vertical = 0.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    shape = RoundedCornerShape(25.dp),
+                    border = BorderStroke(1.dp, Color.LightGray.copy(alpha=0.3f)), //윤곽선
+                ) {
+                    GoogleMapView(
+                        context = context,
+                        mountains = listOf(mountain),
+                        navController = navController
+                    )
                 }
             }
         }
