@@ -4,6 +4,8 @@ import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +34,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import java.io.File
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.deungsan.ui.theme.myBlack
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -95,33 +98,35 @@ fun ReviewDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("등산 기록", fontSize = 20.sp, fontWeight = FontWeight.Bold) },
+                title = { Text("등산 기록", fontSize = 20.sp, color = myBlack) },
                 navigationIcon = {
                     IconButton(onClick = { backDispatcher?.onBackPressed() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "뒤로가기")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "뒤로가기", tint = myBlack)
                     }
                 },
                 actions = {
                     Box {
                         IconButton(onClick = { showMenu = true }) {
-                            Icon(Icons.Default.MoreVert, contentDescription = "More")
+                            Icon(Icons.Default.MoreVert, contentDescription = "More", tint = myBlack)
                         }
 
                         //상단 메뉴 설정
                         DropdownMenu(
                             expanded = showMenu,
-                            onDismissRequest = { showMenu = false }
+                            onDismissRequest = { showMenu = false },
+                            modifier = Modifier
+                                .background(Color(0xFFF7F7F7)) // 메뉴 전체 배경색
                         ) {
                             if (review.author == currentUser) {
                                 DropdownMenuItem(
-                                    text = { Text("수정") },
+                                    text = { Text("수정", color = myBlack) },
                                     onClick = {
                                         showMenu = false
                                         navController.navigate("editReview/${review.id}")
                                     }
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("삭제") },
+                                    text = { Text("삭제", color = myBlack) },
                                     onClick = {
                                         showMenu = false
                                         deleteReview(context, review)
@@ -130,7 +135,7 @@ fun ReviewDetailScreen(
                                 )
                             } else {
                                 DropdownMenuItem(
-                                    text = { Text(if (hasReported) "신고 취소" else "신고") },
+                                    text = { Text(if (hasReported) "신고 취소" else "신고", color = myBlack) },
                                     onClick = {
                                         showMenu = false
                                         if (hasReported) {
@@ -157,23 +162,47 @@ fun ReviewDetailScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(20.dp)
+                .padding(top = 0.dp, bottom = 0.dp, start = 15.dp, end =15.dp)
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize()
                 .background(Color(0xFFF7F7F7))
         ) {
-            Text(text = review.author, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 3.dp, end = 3.dp, top = 2.dp, bottom = 7.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = review.author,
+                    color = myBlack,
+                    fontSize = 16.sp)
+
+                Box(
+                    modifier = Modifier
+                        .clickable(onClick = {navController.navigate("detail/${review.mountain}")})
+                        .background(Color.LightGray.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
+                        .padding(horizontal = 7.dp, vertical = (2.5).dp)
+                ) {
+                    Text(
+                        text = "${review.mountain} >",
+                        fontSize = 14.sp,
+                        lineHeight = 22.sp,
+                        color = myBlack
+                    )
+                }
+            }
             AsyncImage(
                 model = "file://${File(context.filesDir, "reviews/${review.imagePath}")}",
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = 200.dp),
-                contentScale = ContentScale.Fit
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.FillWidth
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = review.mountain, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            Text(text = review.text, style = MaterialTheme.typography.bodyLarge)
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(text = review.text, style = MaterialTheme.typography.bodyLarge, color = myBlack, fontSize = 14.sp)
         }
     }
 }

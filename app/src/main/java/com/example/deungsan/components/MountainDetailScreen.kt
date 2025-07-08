@@ -1,5 +1,6 @@
 package com.example.deungsan.components
 
+import android.R
 import android.content.Context
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.deungsan.data.loader.JsonLoader
 import com.example.deungsan.data.model.Mountain
+import com.example.deungsan.ui.theme.myBlack
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,16 +55,17 @@ fun MountainDetailScreen(mountainName: String) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "🏔️ ${mountain.name}",
+                        text = mountain.name,
                         fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                        color = myBlack
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { backDispatcher?.onBackPressed() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "뒤로가기"
+                            contentDescription = "뒤로가기",
+                            tint = myBlack
                         )
                     }
                 },
@@ -98,22 +101,22 @@ fun MountainDetailScreen(mountainName: String) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Column {
-                Text("📍 위치", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Text(mountain.location, fontSize = 15.sp)
+                Text("📍 위치", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = myBlack)
+                Text(mountain.location, fontSize = 14.sp, color = myBlack)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Column {
-                Text("🗻 고도", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Text("${mountain.height}m", fontSize = 15.sp)
+                Text("🗻 고도", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = myBlack)
+                Text("${mountain.height}m", fontSize = 14.sp, color = myBlack)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Column {
-                Text("📝 설명", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Text(mountain.text, fontSize = 15.sp)
+                Text("📝 설명", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = myBlack)
+                Text(mountain.text, fontSize = 14.sp, color = myBlack)
             }
         }
     }

@@ -42,6 +42,7 @@ import androidx.navigation.NavController
 import com.example.deungsan.R
 import kotlinx.coroutines.delay
 import androidx.compose.ui.text.TextStyle
+import com.example.deungsan.ui.theme.myBlack
 
 @Composable
 fun ListTab(context: Context, navController: NavController) {
@@ -85,7 +86,7 @@ fun ListTab(context: Context, navController: NavController) {
             Text(
                 text = "명산 리스트",
                 fontSize = 20.sp,
-                color = Color.Black,
+                color = myBlack,
                 modifier = Modifier
                     .background(Color.Transparent)
                     .padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
@@ -140,9 +141,9 @@ fun DeungSanTopBar(
                             .focusRequester(focusRequester),
                         textStyle = TextStyle(
                             fontSize = 15.sp,
-                            color = Color.Black
+                            color = myBlack
                         ),
-                        cursorBrush = SolidColor(Color.Black),
+                        cursorBrush = SolidColor(myBlack),
                         decorationBox = { innerTextField ->
                             if (searchQuery.isEmpty()) {
                                 Text(

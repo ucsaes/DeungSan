@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.deungsan.data.loader.MountainViewModel
+import com.example.deungsan.ui.theme.myBlack
 import kotlin.text.contains
 
 
@@ -82,7 +83,7 @@ fun MountainList(viewModel: MountainViewModel = viewModel(), mountains: List<Mou
                     text = "가고 싶은 산을 저장해보세요!",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(20.dp),
                     color = Color.Gray,
                     textAlign = TextAlign.Center
                 )
@@ -127,7 +128,8 @@ fun MountainItem(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = mountain.name,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    color = myBlack
                 )
                 Text(
                     text = "${mountain.height}m — ${mountain.name}\n${mountain.location}",
