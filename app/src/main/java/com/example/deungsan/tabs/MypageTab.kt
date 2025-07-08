@@ -83,7 +83,6 @@ import java.io.FileOutputStream
 import kotlin.math.exp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
-
 @Composable
 fun MyPageTab(context: Context, navController: NavController) {
     var expanded by remember { mutableStateOf(false) }
