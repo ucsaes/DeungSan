@@ -57,12 +57,14 @@ class ReportViewModel : ViewModel() {
     fun addReport(context: Context, id: String) {
         viewModelScope.launch {
             ReportManager.addReport(context, id)
+            _reported.value = _reported.value + id
         }
     }
 
     fun removeReport(context: Context, id: String) {
         viewModelScope.launch {
             ReportManager.removeReport(context, id)
+            _reported.value = _reported.value - id
         }
     }
 }

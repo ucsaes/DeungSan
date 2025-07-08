@@ -50,14 +50,22 @@ fun ReviewDetailScreen(
     var showMenu by remember { mutableStateOf(false) }
     val reportedIds by reportViewModel.reported.collectAsState() // 신고 목록 관찰
 
-    // 로컬 상태로 신고 여부 조절 (5초 뒤 반영용)
-    var hasReported by remember { mutableStateOf(review?.id.toString() in reportedIds) }
+    val hasReported by remember(reportedIds, review?.id) {
+        derivedStateOf { review?.id.toString() in reportedIds }
+
+
+        }
+    LaunchedEffect(Unit) { reportViewModel.loadReports(context)}
+
+
+    // 트리거가 발생하면 5초 후 신고 상태 true로
     var triggerReportDelay by remember { mutableStateOf(false) }
 
+
     LaunchedEffect(triggerReportDelay) {
-        if (triggerReportDelay) {
+        if (triggerReportDelay && review != null) {
             delay(5000)
-            hasReported = true
+            reportViewModel.addReport(context, review.id.toString())
             triggerReportDelay = false
         }
     }
@@ -125,7 +133,6 @@ fun ReviewDetailScreen(
                                         showMenu = false
                                         if (hasReported) {
                                             reportViewModel.removeReport(context, review.id.toString())
-                                            hasReported = false
                                             Toast.makeText(context, "신고가 취소되었습니다.", Toast.LENGTH_SHORT).show()
                                             navController.popBackStack()
                                         } else {
