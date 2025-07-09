@@ -25,15 +25,15 @@ Trailog는 전국의 산 정보를 검색하고, 사용자들의 등산 후기�
   - 위키피디아 기반의 전국 산 정보를 카드 형태로 제공  
   - 각 카드에는 **산 이름, 고도, 위치, 사진** 포함
 
-- **❤️ 즐겨찾기 기능**
+- **즐겨찾기 기능**
   - 각 산 카드에 즐겨찾기 버튼
   - 즐겨찾은 산은 Tab3의 지도에서 **하트 마커**로 표시
   - **DataStore**를 통해 앱 재실행 후에도 즐겨찾기 유지
 
-- **🔍 검색 기능**
+- **검색 기능**
   - 산 이름 실시간 검색 및 필터링 지원
 
-- **🔗 산 상세 페이지 연결**
+- **산 상세 페이지 연결**
   - 산 카드 클릭 시 상세 페이지로 이동  
   - **산 정보 + 위치 지도 + 유저 등산 기록** 확인 가능
 
@@ -75,13 +75,6 @@ Trailog는 전국의 산 정보를 검색하고, 사용자들의 등산 후기�
 
 ---
 
-## 📎 부록
-
-- 시연 영상 및 QR: [별첨 자료 보기](https://drive.google.com/file/d/1_2IfP6oJtRacIXC201bt0qAyeiCLFBxi/view?usp=sharing)  
-  ![QR.jpeg](attachment:993b8f5d-a635-4613-b422-61d95ff05d8f:QR.jpeg)
-
----
-
 ## 🛠️ 개발 환경
 
 | 항목 | 내용 |
@@ -95,3 +88,6 @@ Trailog는 전국의 산 정보를 검색하고, 사용자들의 등산 후기�
 ---
 
 🎒 Trailog와 함께, 당신의 등산 이야기를 기록해보세요!
+
+[앱 다운받기]([https://drive.google.com/file/d/1_2IfP6oJtRacIXC201bt0qAyeiCLFBxi/view?usp=sharing](https://drive.google.com/file/d/1_2IfP6oJtRacIXC201bt0qAyeiCLFBxi/view?usp=sharing))  
+
