@@ -54,12 +54,15 @@ suspend fun fetchFromWikidata(name: String): WikidataMountainInfo? {
                     ?.getJSONObject("mainsnak")?.getJSONObject("datavalue")
                     ?.getString("value") ?: ""
 
-                val imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/${URLEncoder.encode(imageFileName, "UTF-8")}"
+                val imageRequest = Request.Builder().url("https://commons.wikimedia.org/wiki/Special:FilePath/${URLEncoder.encode(imageFileName, "UTF-8")}").build()
+
+                val response = httpClient.newCall(imageRequest).execute()
+                val finalUrl = response.request.url.toString()
 
                 WikidataMountainInfo(
                     height = height,
                     location = location,
-                    imagePath = imageUrl
+                    imagePath = finalUrl
                 )
             }
         } catch (e: Exception) {

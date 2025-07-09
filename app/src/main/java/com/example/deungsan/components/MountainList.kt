@@ -99,6 +99,11 @@ fun MountainItem(
     onDetailsClick: () -> Unit,
     onFavClick: () -> Unit
 ){
+    val imageModel = if (mountain!!.imagePath.startsWith("http")) {
+        mountain.imagePath
+    } else {
+        "file:///android_asset/mountains/${mountain.imagePath}"
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -115,7 +120,7 @@ fun MountainItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = "file:///android_asset/mountains/${mountain.imagePath}",
+                model = imageModel,
                 contentDescription = mountain.name,
                 modifier = Modifier
                     .size(64.dp)

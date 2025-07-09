@@ -1,8 +1,8 @@
 package com.example.deungsan.components
 
 import GoogleMapView
-import android.R
 import android.content.Context
+import android.util.Log
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import com.example.deungsan.R
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Favorite
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,6 +51,16 @@ fun MountainDetailScreen(mountainName: String, navController: NavController, vie
     }
     val favorites by viewModel.favorites.collectAsState()
     val isFavorite = (mountainName in favorites)
+
+    Log.d("imagePath", mountain!!.imagePath)
+
+    val imageModel = if (mountain!!.imagePath.startsWith("http")) {
+        mountain.imagePath
+    } else {
+        "file:///android_asset/mountains/${mountain.imagePath}"
+    }
+
+
 
     if (mountain == null) {
         Scaffold(
@@ -146,15 +158,16 @@ fun MountainDetailScreen(mountainName: String, navController: NavController, vie
                 Spacer(modifier = Modifier.height(15.dp))
                 // 이미지
                 AsyncImage(
-                    model = "file:///android_asset/mountains/${mountain.imagePath}",
+                    model = imageModel,
                     contentDescription = mountain.name,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(220.dp)
                         .clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.placeholder), // 로딩 중 보여줄 이미지
+                    error = painterResource(R.drawable.error) // 실패 시 대체 이미지                )
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Card(
