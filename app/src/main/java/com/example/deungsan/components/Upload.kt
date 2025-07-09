@@ -98,56 +98,64 @@ fun AddReviewScreen(
                     containerColor = Color(0xFFF7F7F7)
                 ),
                 actions = {
-                    val isEnabled = text.isNotBlank() && imageUri != null && mountain.isNotBlank()
+                    var isSubmitting by remember { mutableStateOf(false) }
+
+                    val isEnabled = text.isNotBlank() && imageUri != null && mountain.isNotBlank() && !isSubmitting
+
 
                     TextButton(
                         onClick = {
                             scope.launch {
-                                val exists = checkMountainExistsOnWikipedia(mountain)
-                                if (!exists) {
-                                    Toast.makeText(context, "존재하지 않는 산입니다.", Toast.LENGTH_SHORT).show()
-                                    return@launch
-                                }
-
-                                val existingMountains = JsonLoader.loadMountainsFromAssets(context)
-                                val mountainExists = existingMountains.any { it.name == mountain }
-
-                                if (!mountainExists) {
-                                    val newMountain = fetchMountainData(context, mountain)
-                                    if (newMountain == null) {
-                                        Toast.makeText(context, "산 정보 가져오기 실패", Toast.LENGTH_SHORT).show()
+                                isSubmitting = true
+                                try {
+                                    val exists = checkMountainExistsOnWikipedia(mountain)
+                                    if (!exists) {
+                                        Toast.makeText(context, "존재하지 않는 산입니다.", Toast.LENGTH_SHORT).show()
                                         return@launch
                                     }
 
-                                    val updated = existingMountains.toMutableList().apply { add(newMountain) }
-                                    val json = Gson().toJson(updated)
-                                    File(context.filesDir, "mountain_with_summary.json").writeText(json)
+                                    val existingMountains = JsonLoader.loadMountainsFromAssets(context)
+                                    val mountainExists = existingMountains.any { it.name == mountain }
+
+                                    if (!mountainExists) {
+                                        val newMountain = fetchMountainData(context, mountain)
+                                        if (newMountain == null) {
+                                            Toast.makeText(context, "산 정보 가져오기 실패", Toast.LENGTH_SHORT).show()
+                                            return@launch
+                                        }
+
+                                        val updated = existingMountains.toMutableList().apply { add(newMountain) }
+                                        val json = Gson().toJson(updated)
+                                        File(context.filesDir, "mountain_with_summary.json").writeText(json)
+                                    }
+
+                                    val reviews = JsonLoader.loadReviewsFromAssets(context).toMutableList()
+                                    val newId = (reviews.maxByOrNull { it.id }?.id ?: 0) + 1
+                                    val fileName = "$newId.jpeg"
+
+                                    imageUri?.let { uri ->
+                                        val inputStream = context.contentResolver.openInputStream(uri)
+                                        val file = File(context.filesDir, "reviews/$fileName")
+                                        file.parentFile?.mkdirs()
+                                        val outputStream = file.outputStream()
+                                        inputStream?.copyTo(outputStream)
+                                        inputStream?.close()
+                                        outputStream.close()
+                                    }
+
+                                    val newReview = Review(
+                                        id = newId,
+                                        author = currentUser,
+                                        mountain = mountain,
+                                        text = text,
+                                        imagePath = fileName
+                                    )
+                                    reviews.add(newReview)
+                                    saveReviewsToFile(context, reviews)
+                                    onReviewAdded()
+                                }finally {
+                                    isSubmitting = false
                                 }
-
-                                val reviews = JsonLoader.loadReviewsFromAssets(context).toMutableList()
-                                val newId = (reviews.maxByOrNull { it.id }?.id ?: 0) + 1
-                                val fileName = "$newId.jpeg"
-
-                                imageUri?.let { uri ->
-                                    val inputStream = context.contentResolver.openInputStream(uri)
-                                    val file = File(context.filesDir, "reviews/$fileName")
-                                    file.parentFile?.mkdirs()
-                                    val outputStream = file.outputStream()
-                                    inputStream?.copyTo(outputStream)
-                                    inputStream?.close()
-                                    outputStream.close()
-                                }
-
-                                val newReview = Review(
-                                    id = newId,
-                                    author = currentUser,
-                                    mountain = mountain,
-                                    text = text,
-                                    imagePath = fileName
-                                )
-                                reviews.add(newReview)
-                                saveReviewsToFile(context, reviews)
-                                onReviewAdded()
                             }
                         },
                         enabled = isEnabled

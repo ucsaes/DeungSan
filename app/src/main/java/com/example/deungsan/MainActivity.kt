@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         copyJsonIfNotExists(this)
         setContent {
-            CompositionLocalProvider(LocalCurrentUser provides "한다인이") {
+            CompositionLocalProvider(LocalCurrentUser provides "김등산") {
                 DeungSanTheme {
                     Surface(modifier = Modifier.fillMaxSize()) {
                         TabWithSwipe(this)

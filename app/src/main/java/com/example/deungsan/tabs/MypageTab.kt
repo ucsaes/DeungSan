@@ -271,13 +271,6 @@ fun MyPageTab(context: Context, navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = "📍 내 위치 기반 지도",
-            modifier = Modifier.padding(start = 16.dp, bottom = 4.dp),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
-        )
-
         GoogleMapView(
             context = context,
             mountains = mountains,
