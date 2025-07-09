@@ -125,6 +125,8 @@ fun MountainItem(
                 modifier = Modifier
                     .size(64.dp)
                     .clip(RoundedCornerShape(12.dp)),
+                placeholder = painterResource(com.example.deungsan.R.drawable.placeholder), // 로딩 중 보여줄 이미지
+                error = painterResource(com.example.deungsan.R.drawable.error), // 실패 시 대체 이미지       ,
                 contentScale = ContentScale.Crop
             )
 
