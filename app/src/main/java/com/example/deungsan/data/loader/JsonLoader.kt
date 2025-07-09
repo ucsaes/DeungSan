@@ -57,7 +57,7 @@ object JsonLoader {
         return updatedList
     }
 
-    private suspend fun fetchWikipediaSummary(name: String): String {
+    suspend fun fetchWikipediaSummary(name: String): String {
         return withContext(Dispatchers.IO) {
             try {
                 val encodedName = URLEncoder.encode(name, "UTF-8")
