@@ -269,7 +269,7 @@ fun MountainDetailScreen(mountainName: String, navController: NavController, vie
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            "리뷰 보기 >",
+                            "등산 기록 보기 >",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White

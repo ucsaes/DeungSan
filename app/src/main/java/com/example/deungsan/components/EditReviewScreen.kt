@@ -41,7 +41,7 @@ fun EditReviewScreen(
 
     // 예외 처리
     if (review == null) {
-        Text("리뷰를 찾을 수 없습니다.")
+        Text("등산 기록를 찾을 수 없습니다.")
         return
     }
 
@@ -51,7 +51,7 @@ fun EditReviewScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("리뷰 수정", fontSize = 20.sp) },
+                title = { Text("등산 기록 수정", fontSize = 20.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.Close, contentDescription = "취소")

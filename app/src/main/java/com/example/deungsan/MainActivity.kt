@@ -239,7 +239,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                //탭2 리뷰 추가
+                //탭2 등산 기록 추가
                 composable(
                     route = "addReview",
                     enterTransition = {
@@ -277,7 +277,7 @@ class MainActivity : ComponentActivity() {
                 }
 
 
-                // 탭2 리뷰 수정
+                // 탭2 등산 기록 수정
                 composable(
                     route = "editReview/{reviewId}",
                     enterTransition = {
@@ -306,7 +306,7 @@ class MainActivity : ComponentActivity() {
                         )
                     } else {
                         // 예외 처리: ID 파싱 실패
-                        Text("잘못된 리뷰 ID입니다.")
+                        Text("잘못된 등산 기록 ID입니다.")
                     }
                 }
 
@@ -452,7 +452,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                     Text(
-                                        text = "${name}의 리뷰",
+                                        text = "${name} 등산 기록들",
                                         fontSize = 16.sp,
                                         color = myBlack,
                                         modifier = Modifier.align(Alignment.Center),

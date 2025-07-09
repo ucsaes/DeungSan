@@ -246,7 +246,7 @@ fun MyPageTab(context: Context, navController: NavController) {
             ) {
                 Icon(Icons.Outlined.RateReview, tint = myBlack, contentDescription = null)
                 Spacer(Modifier.width(12.dp))
-                Text("내 리뷰", color = myBlack)
+                Text("내 등산 기록", color = myBlack)
             }
         }
 
@@ -263,9 +263,9 @@ fun MyPageTab(context: Context, navController: NavController) {
                 modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Outlined.Block, tint = myBlack, contentDescription = "신고된 리뷰")
+                Icon(Icons.Outlined.Block, tint = myBlack, contentDescription = "신고된 등산 기록")
                 Spacer(Modifier.width(12.dp))
-                Text("신고된 리뷰", color = myBlack, fontSize = 16.sp)
+                Text("신고된 등산 기록", color = myBlack, fontSize = 16.sp)
             }
         }
 
@@ -322,7 +322,7 @@ fun MyFavPage(navController: NavController) {
                         )
                     }
                     Text(
-                        text = "내 리뷰",
+                        text = "가고 싶은 산",
                         fontSize = 16.sp,
                         color = myBlack,
                         modifier = Modifier.align(Alignment.Center),
@@ -360,7 +360,7 @@ fun MyReviewPage(navController: NavController) {
     val reviews = JsonLoader.loadReviewsFromAssets(context)
     val currentUser = LocalCurrentUser.current  // 현재 사용자 이름 가져오기
 
-    val myReviews = reviews.filter { it.author == currentUser }  // 내 리뷰만 필터링
+    val myReviews = reviews.filter { it.author == currentUser }  // 내 등산 기록만 필터링
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
 
@@ -389,7 +389,7 @@ fun MyReviewPage(navController: NavController) {
                         )
                     }
                     Text(
-                        text = "내 리뷰",
+                        text = "내 등산 기록",
                         fontSize = 16.sp,
                         color = myBlack,
                         modifier = Modifier.align(Alignment.Center),
@@ -512,7 +512,7 @@ fun BlockedReviewTab(
                         )
                     }
                     Text(
-                        text = "신고된 리뷰",
+                        text = "신고된 등산 기록",
                         fontSize = 16.sp,
                         color = myBlack,
                         modifier = Modifier.align(Alignment.Center),

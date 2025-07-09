@@ -84,7 +84,7 @@ fun ReviewDetailScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("리뷰 없음") },
+                    title = { Text("등산 기록 없음") },
                     navigationIcon = {
                         IconButton(onClick = { backDispatcher?.onBackPressed() }) {
                             Icon(Icons.Default.ArrowBackIosNew, contentDescription = "뒤로가기")
@@ -94,7 +94,7 @@ fun ReviewDetailScreen(
             }
         ) { innerPadding ->
             Column(modifier = Modifier.padding(innerPadding).padding(20.dp)) {
-                Text("해당 리뷰를 찾을 수 없습니다.")
+                Text("해당 등산 기록를 찾을 수 없습니다.")
             }
         }
         return
@@ -253,7 +253,7 @@ fun ReviewDetailScreen(
                                             reportViewModel.addReport(context, review.id.toString())
                                             Toast.makeText(
                                                 context,
-                                                "리뷰가 신고되었습니다.",
+                                                "등산 기록가 신고되었습니다.",
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                             triggerReportDelay = true
@@ -288,19 +288,19 @@ fun ReviewDetailScreen(
 
 
 fun deleteReview(context: Context, review: Review) {
-    // 1. 기존 리뷰 목록 불러오기
+    // 1. 기존 등산 기록 목록 불러오기
     val reviews = JsonLoader.loadReviewsFromAssets(context).toMutableList()
 
-    // 2. 삭제할 리뷰 제거
+    // 2. 삭제할 등산 기록 제거
     reviews.removeIf { it.id == review.id }
 
-    // 3. 리뷰 이미지 파일 삭제
+    // 3. 등산 기록 이미지 파일 삭제
     val imageFile = File(context.filesDir, "reviews/${review.imagePath}")
     if (imageFile.exists()) {
         imageFile.delete()
     }
 
-    // 4. 수정된 리뷰 목록 저장
+    // 4. 수정된 등산 기록 목록 저장
     val json = Gson().toJson(reviews)
     val file = File(context.filesDir, "reviews.json")
     file.writeText(json)

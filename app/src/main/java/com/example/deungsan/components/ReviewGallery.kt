@@ -80,7 +80,7 @@ fun ReviewGallery(
     }
     if (reviews.isEmpty()){
         Text(
-            text = "커뮤니티 탭에서 리뷰를 작성해보세요!",
+            text = "커뮤니티 탭에서 등산 기록를 작성해보세요!",
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp),
@@ -150,7 +150,7 @@ fun ReviewItem(review: Review, navController: NavController) {
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // 리뷰 미리보기 텍스트
+            // 등산 기록 미리보기 텍스트
             Text(
                 text = review.text,
                 maxLines = 2,
