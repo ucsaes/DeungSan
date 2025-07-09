@@ -79,15 +79,52 @@ suspend fun fetchMountainData(context: Context, name: String): Mountain? {
 
     val existing = JsonLoader.loadMountainsFromAssets(context)
     val newId = (existing.maxByOrNull { it.id }?.id ?: 0) + 1
+    val address = getAddressFromLatLng(latlng.first, latlng.second, BuildConfig.MAPS_API_KEY)
 
     return Mountain(
         id = newId,
         name = name,
         height = wiki.height,
-        location = wiki.location,
         imagePath = wiki.imagePath,
+        location = address,
         text = summary,
         latitude = latlng.first,
         longitude = latlng.second
     )
 }
+
+suspend fun getAddressFromLatLng(lat: Double, lng: Double, apiKey: String): String {
+    return withContext(Dispatchers.IO) {
+        try {
+            val url =
+                "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&language=ko&key=$apiKey"
+            val request = Request.Builder().url(url).build()
+            val client = OkHttpClient()
+
+            client.newCall(request).execute().use { response ->
+                val body = response.body?.string() ?: return@withContext "주소 없음"
+                val json = JSONObject(body)
+                val results = json.optJSONArray("results") ?: return@withContext "주소 없음"
+
+                for (i in 0 until results.length()) {
+                    val result = results.getJSONObject(i)
+                    val types = result.optJSONArray("types")
+                    if (types != null && !"plus_code".equals(types.optString(0))) {
+                        val fullAddress = result.getString("formatted_address")
+                        val parts = fullAddress.split(" ")
+                        if (parts.size > 1) {
+                            return@withContext parts.dropLast(1).joinToString(" ")
+                        } else {
+                            return@withContext fullAddress
+                        }
+                    }
+                }
+
+                "주소 없음"
+            }
+        } catch (e: Exception) {
+            "주소 변환 실패"
+        }
+    }
+}
+
