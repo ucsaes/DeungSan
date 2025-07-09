@@ -61,7 +61,7 @@ fun GoogleMapView(context: Context,
 
 
                     val position = LatLng(mountain.latitude, mountain.longitude)
-                    val isFavorite = favorites.contains(mountain.id.toString())
+                    val isFavorite = favorites.contains(mountain.name.toString())
 
                     val markerOptions = MarkerOptions()
                         .position(position)

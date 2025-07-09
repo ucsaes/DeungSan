@@ -30,6 +30,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Settings
@@ -296,23 +297,42 @@ fun MyFavPage(navController: NavController) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "가고 싶은 산",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { backDispatcher?.onBackPressed() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "뒤로가기")
+            Column {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp) // 원하는 두께로 조절
+                        .background(Color(0xFFF7F7F7))
+                        .statusBarsPadding()
+                ) {
+                    IconButton(
+                        onClick = { backDispatcher?.onBackPressed() },
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(start = 0.dp)
+                            .size(40.dp)  // 아이콘 버튼도 작게
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBackIos,
+                            contentDescription = "뒤로가기",
+                            tint = myBlack,
+                            modifier = Modifier.size(20.dp)
+                        )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFF7F7F7)
+                    Text(
+                        text = "내 리뷰",
+                        fontSize = 16.sp,
+                        color = myBlack,
+                        modifier = Modifier.align(Alignment.Center),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                androidx.compose.material3.Divider(
+                    color = Color.LightGray.copy(alpha = 0.2f),
+                    thickness = 0.5.dp,
+                    modifier = Modifier.fillMaxWidth()
                 )
-            )
+            }
         },
         containerColor = Color(0xFFF7F7F7)
     ) { innerPadding ->
@@ -344,23 +364,42 @@ fun MyReviewPage(navController: NavController) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
+            Column {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp) // 원하는 두께로 조절
+                        .background(Color(0xFFF7F7F7))
+                        .statusBarsPadding()
+                ) {
+                    IconButton(
+                        onClick = { backDispatcher?.onBackPressed() },
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(start = 0.dp)
+                            .size(40.dp)  // 아이콘 버튼도 작게
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBackIos,
+                            contentDescription = "뒤로가기",
+                            tint = myBlack,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                     Text(
                         text = "내 리뷰",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                        fontSize = 16.sp,
+                        color = myBlack,
+                        modifier = Modifier.align(Alignment.Center),
+                        fontWeight = FontWeight.SemiBold
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { backDispatcher?.onBackPressed() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "뒤로가기")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFF7F7F7)
+                }
+                androidx.compose.material3.Divider(
+                    color = Color.LightGray.copy(alpha = 0.2f),
+                    thickness = 0.5.dp,
+                    modifier = Modifier.fillMaxWidth()
                 )
-            )
+            }
         },
         containerColor = Color(0xFFF7F7F7)
     ) { innerPadding ->
@@ -448,23 +487,42 @@ fun BlockedReviewTab(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
+            Column {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp) // 원하는 두께로 조절
+                        .background(Color(0xFFF7F7F7))
+                        .statusBarsPadding()
+                ) {
+                    IconButton(
+                        onClick = { backDispatcher?.onBackPressed() },
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(start = 0.dp)
+                            .size(40.dp)  // 아이콘 버튼도 작게
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBackIos,
+                            contentDescription = "뒤로가기",
+                            tint = myBlack,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                     Text(
                         text = "신고된 리뷰",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                        fontSize = 16.sp,
+                        color = myBlack,
+                        modifier = Modifier.align(Alignment.Center),
+                        fontWeight = FontWeight.SemiBold
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {backDispatcher?.onBackPressed() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "뒤로가기")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFF7F7F7)
+                }
+                androidx.compose.material3.Divider(
+                    color = Color.LightGray.copy(alpha = 0.2f),
+                    thickness = 0.5.dp,
+                    modifier = Modifier.fillMaxWidth()
                 )
-            )
+            }
         }
     ) { innerPadding ->
         LazyVerticalStaggeredGrid(
