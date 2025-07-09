@@ -106,7 +106,7 @@ fun ReviewDetailScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp) // 원하는 두께로 조절
+                        .height(80.dp) // 원하는 두께로 조절
                         .background(Color(0xFFF7F7F7))
                         .statusBarsPadding()
                 ) {

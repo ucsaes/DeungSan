@@ -14,6 +14,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,19 +28,27 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.deungsan.data.loader.JsonLoader
+import com.example.deungsan.data.loader.MountainViewModel
 import com.example.deungsan.data.model.Mountain
+import com.example.deungsan.ui.theme.GreenPrimaryDark
 import com.example.deungsan.ui.theme.myBlack
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MountainDetailScreen(mountainName: String, navController: NavController) {
+fun MountainDetailScreen(mountainName: String, navController: NavController, viewModel: MountainViewModel = viewModel()) {
     val context: Context = LocalContext.current
     val mountains: List<Mountain> = remember { JsonLoader.loadMountainsFromAssets(context) }
     val mountain = mountains.find { it.name == mountainName }
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    LaunchedEffect(Unit) {
+        viewModel.loadFavorites(context)
+    }
+    val favorites by viewModel.favorites.collectAsState()
+    val isFavorite = (mountainName in favorites)
 
     if (mountain == null) {
         Scaffold(
@@ -75,7 +85,7 @@ fun MountainDetailScreen(mountainName: String, navController: NavController) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp) // 원하는 두께로 조절
+                            .height(80.dp) // 원하는 두께로 조절
                             .background(Color.Transparent)
                             .statusBarsPadding()
                     ) {
@@ -100,6 +110,22 @@ fun MountainDetailScreen(mountainName: String, navController: NavController) {
                             modifier = Modifier.align(Alignment.Center),
                             fontWeight = FontWeight.SemiBold
                         )
+                        IconButton(
+                            onClick = { viewModel.toggleFavorite(
+                                context,
+                                mountain.name
+                            ) },
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .padding(end = 5.dp)
+                                .size(40.dp)  // 아이콘 버튼도 작게
+                        ) {
+                            Icon(
+                                imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                contentDescription = "Toggle Favorite",
+                                tint = if (isFavorite) Color(0xFFFF6262) else Color(0xFFB9B9B9)
+                            )
+                        }
                     }
                     Divider(
                         color = Color.LightGray.copy(alpha = 0.2f),
@@ -113,10 +139,11 @@ fun MountainDetailScreen(mountainName: String, navController: NavController) {
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
-                    .padding(top = 15.dp, bottom = 6.dp, start = 15.dp, end = 15.dp)
+                    .padding(top = 0.dp, bottom = 6.dp, start = 15.dp, end = 15.dp)
                     .verticalScroll(rememberScrollState())
                     .fillMaxSize()
             ) {
+                Spacer(modifier = Modifier.height(15.dp))
                 // 이미지
                 AsyncImage(
                     model = "file:///android_asset/mountains/${mountain.imagePath}",
@@ -191,6 +218,8 @@ fun MountainDetailScreen(mountainName: String, navController: NavController) {
                     }
                 }
 
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -204,6 +233,32 @@ fun MountainDetailScreen(mountainName: String, navController: NavController) {
                         mountains = listOf(mountain),
                         navController = navController
                     )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 0.dp, vertical = 0.dp)
+                        .clickable{ navController.navigate("ReviewMountain/${mountainName}") },
+                    colors = CardDefaults.cardColors(containerColor = GreenPrimaryDark),
+                    shape = RoundedCornerShape(25.dp),
+                    border = BorderStroke(1.dp, Color.LightGray.copy(alpha=0.3f)), //윤곽선
+                ) {
+                    Column (
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            "리뷰 보기 >",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }

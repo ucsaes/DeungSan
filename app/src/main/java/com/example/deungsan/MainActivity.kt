@@ -4,6 +4,7 @@ import EditReviewScreen
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -47,21 +48,31 @@ import androidx.navigation.navArgument
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.runtime.internal.composableLambda
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.deungsan.components.AddReviewScreen
 import com.example.deungsan.components.ReviewDetailScreen
+import com.example.deungsan.components.ReviewGallery
+import com.example.deungsan.components.ReviewItem
 import com.example.deungsan.data.loader.JsonLoader
 import com.example.deungsan.tabs.BlockedReviewTab
 import com.example.deungsan.tabs.MyFavPage
 import com.example.deungsan.tabs.MyReviewPage
+import com.example.deungsan.ui.theme.myBlack
 
 val LocalCurrentUser = compositionLocalOf { "unknown" }  // 기본값
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -392,6 +403,79 @@ class MainActivity : ComponentActivity() {
                 ) { backStackEntry ->
                     val mountainName = backStackEntry.arguments?.getString("mountainName") ?: ""
                     MountainDetailScreen(mountainName, navController)
+                }
+
+                composable(
+                    route = "ReviewMountain/{name}",
+                    arguments = listOf(navArgument("name") { type = NavType.StringType }),
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popEnterTransition = {
+                        slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(300))
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
+                    }
+                ) { backStackEntry ->
+                    val name = backStackEntry.arguments?.getString("name") ?: ""
+                    val reviews = remember {JsonLoader.loadReviewsFromAssets(context) }
+                    val visibleReviews = remember(reviews, name) {
+                        reviews.filter { it.mountain == name }
+                    }
+                    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+                    Scaffold(
+                        topBar = {
+                            Column {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(80.dp) // 원하는 두께로 조절
+                                        .background(Color(0xFFF7F7F7))
+                                        .statusBarsPadding()
+                                ) {
+                                    IconButton(
+                                        onClick = { backDispatcher?.onBackPressed() },
+                                        modifier = Modifier
+                                            .align(Alignment.CenterStart)
+                                            .padding(start = 0.dp)
+                                            .size(40.dp)  // 아이콘 버튼도 작게
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.ArrowBackIos,
+                                            contentDescription = "${name}의 리뷰",
+                                            tint = myBlack,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
+                                    Text(
+                                        text = "등산 기록",
+                                        fontSize = 16.sp,
+                                        color = myBlack,
+                                        modifier = Modifier.align(Alignment.Center),
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                                Divider(
+                                    color = Color.LightGray.copy(alpha = 0.2f),
+                                    thickness = 0.5.dp,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        }
+                    ) { innerPadding ->
+                        Box(
+                            modifier = Modifier
+                                .padding(innerPadding)
+                                .fillMaxSize()
+                                .background(Color(0xFFF7F7F7))
+                        ) {
+                            ReviewGallery(visibleReviews, navController, hiddenReviewIds)
+                        }
+                    }
                 }
 
 
