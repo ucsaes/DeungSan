@@ -232,7 +232,9 @@ fun MountainDetailScreen(mountainName: String, navController: NavController, vie
                         context = context,
                         mountains = listOf(mountain),
                         navController = navController,
-                        favorites= favorites
+                        favorites= favorites,
+                        height = 200,
+                        zoom = 11f
                     )
                 }
 

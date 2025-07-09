@@ -282,7 +282,9 @@ fun MyPageTab(context: Context, navController: NavController) {
             context = context,
             mountains = mountains,
             favorites = favorites,
-            navController = navController
+            navController = navController,
+            height = 500,
+            zoom= 5f
         )
     }
 
