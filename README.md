@@ -89,5 +89,5 @@ Trailog는 전국의 산 정보를 검색하고, 사용자들의 등산 후기�
 
 🎒 Trailog와 함께, 당신의 등산 이야기를 기록해보세요!
 
-[앱 다운받기]([https://drive.google.com/file/d/1_2IfP6oJtRacIXC201bt0qAyeiCLFBxi/view?usp=sharing](https://drive.google.com/file/d/1_2IfP6oJtRacIXC201bt0qAyeiCLFBxi/view?usp=sharing))  
+📦 [앱 다운받기](https://drive.google.com/file/d/1_2IfP6oJtRacIXC201bt0qAyeiCLFBxi/view)
 
