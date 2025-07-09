@@ -446,13 +446,13 @@ class MainActivity : ComponentActivity() {
                                     ) {
                                         Icon(
                                             imageVector = Icons.Default.ArrowBackIos,
-                                            contentDescription = "${name}의 리뷰",
+                                            contentDescription = "뒤로가기",
                                             tint = myBlack,
                                             modifier = Modifier.size(20.dp)
                                         )
                                     }
                                     Text(
-                                        text = "등산 기록",
+                                        text = "${name}의 리뷰",
                                         fontSize = 16.sp,
                                         color = myBlack,
                                         modifier = Modifier.align(Alignment.Center),
