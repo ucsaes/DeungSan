@@ -231,7 +231,8 @@ fun MountainDetailScreen(mountainName: String, navController: NavController, vie
                     GoogleMapView(
                         context = context,
                         mountains = listOf(mountain),
-                        navController = navController
+                        navController = navController,
+                        favorites= favorites
                     )
                 }
 

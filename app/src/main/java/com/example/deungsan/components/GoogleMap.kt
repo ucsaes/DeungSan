@@ -12,6 +12,8 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.view.View
 import androidx.compose.runtime.Composable
@@ -21,6 +23,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.example.deungsan.R
 import com.example.deungsan.data.model.Mountain
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLngBounds
 
@@ -28,7 +31,7 @@ import com.google.android.gms.maps.model.LatLngBounds
 @Composable
 fun GoogleMapView(context: Context,
                   mountains: List<Mountain>,
-                  favorites: Set<String> = emptySet(),
+                  favorites: Set<String>,
                   navController: NavController
 ) {
     val mapView = rememberMapViewWithLifecycle(context)
@@ -68,15 +71,14 @@ fun GoogleMapView(context: Context,
                     if (isFavorite) {
                         // 하트 마커
                         markerOptions.icon(
-                            //BitmapDescriptorFactory.fromResource(R.drawable.heart_marker)
-                            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
+                            resizeMarkerIcon(context, R.drawable.heart_marker, 80, 80)
+                            // BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
 
                         )
                     } else {
                         // 일반 산 마커
                         markerOptions.icon(
-                            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
-                        )
+                            resizeMarkerIcon(context, R.drawable.mountain_marker, 80, 80)                        )
                     }
 
                     googleMap.addMarker(markerOptions)
@@ -90,6 +92,13 @@ fun GoogleMapView(context: Context,
         .fillMaxWidth()
         .height(500.dp))
 }
+
+fun resizeMarkerIcon(context: Context, resId: Int, width: Int, height: Int): BitmapDescriptor {
+    val bitmap = BitmapFactory.decodeResource(context.resources, resId)
+    val resized = Bitmap.createScaledBitmap(bitmap, width, height, false)
+    return BitmapDescriptorFactory.fromBitmap(resized)
+}
+
 
 @Composable
 fun rememberMapViewWithLifecycle(context: Context): MapView {
