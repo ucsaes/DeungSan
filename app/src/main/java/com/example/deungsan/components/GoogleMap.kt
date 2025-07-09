@@ -26,13 +26,16 @@ import com.example.deungsan.data.model.Mountain
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MapStyleOptions
 
 @SuppressLint("MissingPermission")
 @Composable
 fun GoogleMapView(context: Context,
                   mountains: List<Mountain>,
                   favorites: Set<String>,
-                  navController: NavController
+                  navController: NavController,
+                  height: Int,
+                  zoom: Float
 ) {
     val mapView = rememberMapViewWithLifecycle(context)
 
@@ -42,14 +45,23 @@ fun GoogleMapView(context: Context,
             getMapAsync { googleMap ->
                 // 전체 산 보이게
                 if (mountains.isNotEmpty()) {
+                    val firstMountain = mountains[0]
+                    val position = LatLng(firstMountain.latitude, firstMountain.longitude)
                     val builder = LatLngBounds.builder()
                     mountains.forEach { mountain ->
                         builder.include(LatLng(mountain.latitude, mountain.longitude))
                     }
                     val bounds = builder.build()
-                    val padding = 200 // 화면 가장자리 여백 (픽셀)
-                    val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
+                    val zoomLevel = zoom // 원하는 줌 수준 (10~15 사이 추천)
+
+                    val cameraUpdate = CameraUpdateFactory.newLatLngZoom(position, zoomLevel)
                     googleMap.moveCamera(cameraUpdate)
+                    val padding = 200 // 화면 가장자리 여백 (픽셀)
+
+                    googleMap.moveCamera(cameraUpdate)
+                    val success = googleMap.setMapStyle(
+                        MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style)
+                    )
                 }
 
                 for (mountain in mountains) {
@@ -71,14 +83,14 @@ fun GoogleMapView(context: Context,
                     if (isFavorite) {
                         // 하트 마커
                         markerOptions.icon(
-                            resizeMarkerIcon(context, R.drawable.heart_marker, 80, 80)
+                            resizeMarkerIcon(context, R.drawable.heart_marker, 120, 120)
                             // BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
 
                         )
                     } else {
                         // 일반 산 마커
                         markerOptions.icon(
-                            resizeMarkerIcon(context, R.drawable.mountain_marker, 80, 80)                        )
+                            resizeMarkerIcon(context, R.drawable.mountain_marker, 120, 120)                        )
                     }
 
                     googleMap.addMarker(markerOptions)
@@ -90,7 +102,7 @@ fun GoogleMapView(context: Context,
 
     }, modifier = Modifier
         .fillMaxWidth()
-        .height(500.dp))
+        .height(height.dp))
 }
 
 fun resizeMarkerIcon(context: Context, resId: Int, width: Int, height: Int): BitmapDescriptor {
