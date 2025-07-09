@@ -12,7 +12,7 @@ Trailog는 전국의 산 정보를 검색하고, 사용자들의 등산 후기�
 
 ### 👩‍💻 한다인
 - GitHub: [https://github.com/hhadainn](https://github.com/hhadainn)
-- 이화여자대학교 인공지능학과 23학번 한다인입니다.
+- 이화여자대학교 인공지능학과입니다.
 
 
 ---
